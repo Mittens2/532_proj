@@ -101,9 +101,9 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 # Models we will use
 logistic1 = linear_model.LogisticRegression(C=6000.0)
 logistic2 = linear_model.LogisticRegression(C=6000.0)
-rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50)
-rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, cd_k=7)
-rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([1-i/3 for i in range(3)]))
+rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=50, n_components=50)
+rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=50, n_components=50, cd_k=1)
+rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=50, n_components=50, temp=np.array([0.8**i for i in range(3)]))
 
 classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
 classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])

@@ -115,6 +115,7 @@ class RBM_PT(BernoulliRBM):
         self.n_iter = n_iter
         self.verbose = verbose
         self.random_state = random_state
+        self.ex_ind = self.n_temperatures - 1
 
     def _free_energy(self, v, i):
         """Computes the free energy F(v) = - log sum_h exp(-E(v,h)).
@@ -127,9 +128,9 @@ class RBM_PT(BernoulliRBM):
         free_energy : array-like, shape (n_samples,)
             The value of the free energy.
         """
-        return (- safe_sparse_dot(v, self.intercept_visible_[i])
-        - np.logaddexp(0, safe_sparse_dot(v, self.components_[i].T)
-                       + self.intercept_hidden_[i]).sum(axis=1))
+        return (- safe_sparse_dot(v, self.intercept_visible_)
+        - np.logaddexp(0, safe_sparse_dot(v, self.components_.T)
+                       + self.intercept_hidden_).sum(axis=1))
 
 
     def fit(self, X, y=None):
@@ -148,10 +149,10 @@ class RBM_PT(BernoulliRBM):
         rng = check_random_state(self.random_state)
 
         self.components_ = np.asarray(
-            rng.normal(0, 0.01, (self.n_temperatures, self.n_components, X.shape[1])),
+            rng.normal(0, 0.01, (self.n_components, X.shape[1])),
             order='F')
-        self.intercept_hidden_ = np.zeros((self.n_temperatures, self.n_components))
-        self.intercept_visible_ = np.zeros((self.n_temperatures, X.shape[1]))
+        self.intercept_hidden_ = np.zeros(self.n_components)
+        self.intercept_visible_ = np.zeros(X.shape[1])
         self.h_samples_ = np.zeros((self.n_temperatures, self.batch_size, self.n_components))
 
         n_batches = int(np.ceil(float(n_samples) / self.batch_size))
@@ -175,14 +176,21 @@ class RBM_PT(BernoulliRBM):
 
         return self
 
-    def exchange(self, v, rng):
-        i, j = rng.choice(self.n_temperatures, 2)
-        en1 = self._free_energy(v[i], i)
-        en2 = self._free_energy(v[j], j)
+    def exchange(self, v, h, rng):
+        i = self.ex_ind
+        if i == self.n_temperatures - 1:
+            j = i - 1
+        elif i == 0:
+            j = 1
+        else:
+            j = np.random.randint(0, 1) * 2 - 1
+        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
+        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
         prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
         rand = np.log(rng.uniform())
         if prob > rand:
             self.components_[(i, j)] = self.components_[(j, i)]
+        self.ex_ind = j
 
     def _fit(self, v_pos, rng, ):
         """Inner fit for one mini-batch.
@@ -200,17 +208,18 @@ class RBM_PT(BernoulliRBM):
         h_neg = self._mean_hiddens(v_neg)
 
         lr = float(self.learning_rate) / v_pos.shape[0]
-        update = np.transpose(np.transpose(v_pos, (0,2,1)) @ h_pos, (0,2,1))
-        update -= np.transpose(h_neg, (0,2,1)) @ v_neg
+        self.exchange(v_neg, h_neg, rng)
+
+        update = (v_pos[0].T @ h_pos[0]).T
+        update -= h_neg[0].T @ v_neg[0]
         self.components_ += lr * update
-        self.intercept_hidden_ += lr * (h_pos.sum(axis=1) - h_neg.sum(axis=1))
+        self.intercept_hidden_ += lr * (h_pos[0].sum(axis=0) - h_neg[0].sum(axis=0))
         self.intercept_visible_ += lr * (np.asarray(
-                                         v_pos.sum(axis=1)).squeeze() -
-                                         v_neg.sum(axis=1))
+                                         v_pos[0].sum(axis=0)).squeeze() -
+                                         v_neg[0].sum(axis=0))
 
         h_neg[rng.uniform(size=h_neg.shape) < h_neg] = 1.0  # sample binomial
         self.h_samples_ = np.floor(h_neg, h_neg)
-        self.exchange(v_neg, rng)
 
     def _mean_hiddens(self, v):
         """Computes the probabilities P(h=1|v).
@@ -223,8 +232,8 @@ class RBM_PT(BernoulliRBM):
         h : array-like, shape (n_temperatures, n_samples, n_components)
             Corresponding mean field values for the hidden layer.
         """
-        p = v @ np.transpose(self.components_, (0,2,1))
-        p += self.intercept_hidden_[:, None, :]
+        p = v @ self.components_.T
+        p += self.intercept_hidden_[None, None, :]
         p *= self.temp[:,None,None]
         return expit(p, out=p)
 
@@ -242,7 +251,7 @@ class RBM_PT(BernoulliRBM):
             Values of the visible layer.
         """
         p = h @ self.components_
-        p += self.intercept_visible_[:, None, :]
+        p += self.intercept_visible_[None, None, :]
         p *= self.temp[:,None,None]
         expit(p, out=p)
         return (rng.random_sample(size=p.shape) < p)
