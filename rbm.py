@@ -183,11 +183,13 @@ class RBM_PT(BernoulliRBM):
         elif i == 0:
             j = 1
         else:
-            j = np.random.randint(0, 1) * 2 - 1
+            j = i + np.random.randint(0, 2) * 2 - 1
         en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
         en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
         prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
         rand = np.log(rng.uniform())
+        #print(prob)
+        #print(i)
         if prob > rand:
             self.components_[(i, j)] = self.components_[(j, i)]
         self.ex_ind = j
@@ -292,3 +294,43 @@ class RBM_PT(BernoulliRBM):
         fe = self._free_energy(v, 0)
         fe_ = self._free_energy(v_, 0)
         return v.shape[1] * log_logistic(fe_ - fe)
+
+
+
+class RBM_LPT(RBM_PT):
+
+    def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
+                 n_iter=10, verbose=0, random_state=None, temp=np.array([1-i/5 for i in range(5)])):
+        self.n_components = n_components
+        self.temp = temp
+        self.n_temperatures = temp.shape[0]
+        self.learning_rate = learning_rate
+        self.batch_size = batch_size
+        self.n_iter = n_iter
+        self.verbose = verbose
+        self.random_state = random_state
+        self.ex_ind = self.n_temperatures - 1
+        self.ex_dir = -1
+
+    def exchange(self, v, h, rng):
+        i = self.ex_ind
+        if i == self.n_temperatures - 1:
+            j = i - 1
+            self.ex_ind = -1
+        elif i == 0:
+            j = 1
+            self.ex_ind = 1
+        else:
+            j = i + self.ex_dir
+
+        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
+        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
+        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
+        rand = np.log(rng.uniform())
+        #print(prob)
+        #print(i)
+        if prob > rand:
+            self.components_[(i, j)] = self.components_[(j, i)]
+        else:
+            self.ex_dir = -self.ex_dir
+        self.ex_ind = j

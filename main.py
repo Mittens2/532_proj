@@ -27,6 +27,7 @@ classification accuracy.
 from __future__ import print_function
 from rbm import RBM_CD
 from rbm import RBM_PT
+from rbm import RBM_LPT
 
 print(__doc__)
 
@@ -84,15 +85,15 @@ digits = datasets.load_digits()
 X = np.asarray(digits.data, 'float32')
 X, Y = nudge_dataset(X, digits.target)
 
-mnist = fetch_mldata('MNIST original')
-X = mnist.data
-Y = mnist.target
-X,Y = shuffle(X,Y)
+#mnist = fetch_mldata('MNIST original')
+#X = mnist.data
+#Y = mnist.target
+#X,Y = shuffle(X,Y)
 
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
 
-X = X[1:1000]
-Y = Y[1:1000]
+#X = X[1:1000]
+#Y = Y[1:1000]
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     test_size=0.2,
@@ -102,8 +103,9 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 logistic1 = linear_model.LogisticRegression(C=6000.0)
 logistic2 = linear_model.LogisticRegression(C=6000.0)
 rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=50, n_components=50)
-rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=50, n_components=50, cd_k=1)
-rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=50, n_components=50, temp=np.array([0.8**i for i in range(3)]))
+rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, cd_k=1)
+rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(10)]))
+rbm_lpt= RBM_LPT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(10)]))
 
 classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
 classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
@@ -123,8 +125,9 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 
 # Training RBM-Logistic Pipeline
 #classifier1.fit(X_train, Y_train)
-rbm_cd.fit(X_train, Y_train)
+rbm_lpt.fit(X_train, Y_train)
 rbm_pt.fit(X_train, Y_train)
+rbm_cd.fit(X_train, Y_train)
 
 v = X[1,]
 plt.figure(figsize=(4.2, 4))
