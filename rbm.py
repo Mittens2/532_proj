@@ -109,31 +109,27 @@ class RBM_PT(BernoulliRBM):
                  n_iter=10, verbose=0, random_state=None, temp=np.array([1-i/5 for i in range(5)])):
         self.n_components = n_components
         self.temp = temp
-        self.n_temperatures = len(temp)
+        self.n_temperatures = temp.shape[0]
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.n_iter = n_iter
         self.verbose = verbose
         self.random_state = random_state
 
-    def _free_energy(self, v):
+    def _free_energy(self, v, i):
         """Computes the free energy F(v) = - log sum_h exp(-E(v,h)).
         Parameters
         ----------
-        v : array-like, shape (n_temperatures, n_samples, n_features)
+        v : array-like, shape (n_samples, n_features)
             Values of the visible layer.
         Returns
         -------
-        free_energy : array-like, shape (n_temperatures, n_samples,)
+        free_energy : array-like, shape (n_samples,)
             The value of the free energy.
         """
-        ##print(v.shape)
-        #print(self.intercept_visible_[:,:,None].shape)
-        #print(self.temp[:,None,None].shape)
-
-        return (- (v @ self.intercept_visible_[:,:,None]) * self.temp[:,None,None]
-            - np.logaddexp(0, (v @ np.transpose(self.components_, (0,2,1))
-                           + self.intercept_hidden_[:,None,:]) * self.temp[:,None,None]).sum(axis=1))
+        return (- safe_sparse_dot(v, self.intercept_visible_[i])
+        - np.logaddexp(0, safe_sparse_dot(v, self.components_[i].T)
+                       + self.intercept_hidden_[i]).sum(axis=1))
 
 
     def fit(self, X, y=None):
@@ -179,6 +175,15 @@ class RBM_PT(BernoulliRBM):
 
         return self
 
+    def exchange(self, v, rng):
+        i, j = rng.choice(self.n_temperatures, 2)
+        en1 = self._free_energy(v[i], i)
+        en2 = self._free_energy(v[j], j)
+        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
+        rand = np.log(rng.uniform())
+        if prob > rand:
+            self.components_[(i, j)] = self.components_[(j, i)]
+
     def _fit(self, v_pos, rng, ):
         """Inner fit for one mini-batch.
         Adjust the parameters to maximize the likelihood of v using
@@ -205,6 +210,7 @@ class RBM_PT(BernoulliRBM):
 
         h_neg[rng.uniform(size=h_neg.shape) < h_neg] = 1.0  # sample binomial
         self.h_samples_ = np.floor(h_neg, h_neg)
+        self.exchange(v_neg, rng)
 
     def _mean_hiddens(self, v):
         """Computes the probabilities P(h=1|v).
@@ -251,7 +257,7 @@ class RBM_PT(BernoulliRBM):
             Values of the visible layer. Must be all-boolean (not checked).
         Returns
         -------
-        pseudo_likelihood : array-like, shape (n_samples,)
+        pseudo_likelihood : array-like, shape (n_temperatures, n_samples,)
             Value of the pseudo-likelihood (proxy for likelihood).
         Notes
         -----
@@ -263,7 +269,6 @@ class RBM_PT(BernoulliRBM):
 
         v = check_array(X, accept_sparse='csr')
         rng = check_random_state(self.random_state)
-        print(v.shape)
 
         # Randomly corrupt one feature in each sample in v.
         ind = (np.arange(v.shape[0]),
@@ -275,6 +280,6 @@ class RBM_PT(BernoulliRBM):
             v_ = v.copy()
             v_[ind] = 1 - v_[ind]
 
-        fe = self._free_energy(v)
-        fe_ = self._free_energy(v_)
+        fe = self._free_energy(v, 0)
+        fe_ = self._free_energy(v_, 0)
         return v.shape[1] * log_logistic(fe_ - fe)

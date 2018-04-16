@@ -91,8 +91,8 @@ X,Y = shuffle(X,Y)
 
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
 
-X = X[1:10000]
-Y = Y[1:10000]
+X = X[1:1000]
+Y = Y[1:1000]
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     test_size=0.2,
@@ -102,8 +102,8 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 logistic1 = linear_model.LogisticRegression(C=6000.0)
 logistic2 = linear_model.LogisticRegression(C=6000.0)
 rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50)
-rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=10, n_components=50, cd_k=7)
-rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=10, n_components=50, temp=np.array([1-i/2 for i in range(2)]))
+rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, cd_k=7)
+rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([1-i/3 for i in range(3)]))
 
 classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
 classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
@@ -123,7 +123,7 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 
 # Training RBM-Logistic Pipeline
 #classifier1.fit(X_train, Y_train)
-#rbm_cd.fit(X_train, Y_train)
+rbm_cd.fit(X_train, Y_train)
 rbm_pt.fit(X_train, Y_train)
 
 v = X[1,]
@@ -132,7 +132,7 @@ for i, comp in enumerate(rbm_cd.components_):
     plt.subplot(10, 10, i + 1)
     plt.imshow(rbm_cd.continuous_gibbs(v).reshape((28, 28)), cmap=plt.cm.gray_r,
                interpolation='nearest')
-    v = rbm_cd.gibbs(v)
+    v = rbm_pt.gibbs(v)
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ PCD', fontsize=16)
@@ -144,7 +144,7 @@ for i, comp in enumerate(rbm_cd.components_):
     plt.subplot(10, 10, i + 1)
     plt.imshow(rbm_cd.continuous_gibbs(v).reshape((28, 28)), cmap=plt.cm.gray_r,
                interpolation='nearest')
-    v = rbm_cd.ngibbs(v, 50)
+    v = rbm_pt.ngibbs(v, 50)
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ PCD', fontsize=16)
