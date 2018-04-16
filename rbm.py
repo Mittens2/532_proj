@@ -103,6 +103,51 @@ class RBM_CD(BernoulliRBM):
             v = self.gibbs(v)
         return v
 
+    def fit(self, X, y=None):
+        """Fit the model to the data X.
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} shape (n_samples, n_features)
+            Training data.
+        Returns
+        -------
+        self : BernoulliRBM
+        The fitted model.
+        """
+        X = check_array(X, accept_sparse='csr', dtype=np.float64)
+        n_samples = X.shape[0]
+        rng = check_random_state(self.random_state)
+
+        self.components_ = np.asarray(
+            rng.normal(0, 0.01, (self.n_components, X.shape[1])),
+            order='F')
+        self.intercept_hidden_ = np.zeros(self.n_components, )
+        self.intercept_visible_ = np.zeros(X.shape[1], )
+        self.h_samples_ = np.zeros((self.batch_size, self.n_components))
+
+        n_batches = int(np.ceil(float(n_samples) / self.batch_size))
+        batch_slices = list(gen_even_slices(n_batches * self.batch_size,
+                                            n_batches, n_samples))
+        verbose = self.verbose
+        begin = time.time()
+        log_like = np.zeros(self.n_iter)
+        for iteration in xrange(1, self.n_iter + 1):
+            for batch_slice in batch_slices:
+                self._fit(X[batch_slice], rng)
+
+            if verbose:
+                end = time.time()
+                log_like[iteration - 1] = self.score_samples(X).mean()
+                print("[%s] Iteration %d, pseudo-likelihood = %.2f,"
+                      " time = %.2fs"
+                      % (type(self).__name__, iteration,
+                         self.score_samples(X).mean(), end - begin))
+                begin = end
+
+        self.log_like = log_like
+
+        return self
+
 # RBM for parallel tempering
 class RBM_PT(BernoulliRBM):
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
@@ -160,6 +205,7 @@ class RBM_PT(BernoulliRBM):
                                             n_batches, n_samples))
         verbose = self.verbose
         begin = time.time()
+        log_like = np.zeros(self.n_iter)
         for iteration in xrange(1, self.n_iter + 1):
             for batch_slice in batch_slices:
                 v = np.repeat(X[batch_slice].reshape(1,X[batch_slice].shape[0], X[batch_slice].shape[1]), self.n_temperatures, axis=0)
@@ -167,6 +213,7 @@ class RBM_PT(BernoulliRBM):
 
             if verbose:
                 end = time.time()
+                log_like[iteration - 1] = self.score_samples(X).mean()
                 print("[%s] Iteration %d, pseudo-likelihood = %.2f,"
                       " time = %.2fs"
                       % (type(self).__name__, iteration,
@@ -174,25 +221,8 @@ class RBM_PT(BernoulliRBM):
                          end - begin))
                 begin = end
 
+        self.log_like = log_like
         return self
-
-    def exchange(self, v, h, rng):
-        i = self.ex_ind
-        if i == self.n_temperatures - 1:
-            j = i - 1
-        elif i == 0:
-            j = 1
-        else:
-            j = i + np.random.randint(0, 2) * 2 - 1
-        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
-        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
-        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
-        rand = np.log(rng.uniform())
-        #print(prob)
-        #print(i)
-        if prob > rand:
-            self.components_[(i, j)] = self.components_[(j, i)]
-        self.ex_ind = j
 
     def _fit(self, v_pos, rng, ):
         """Inner fit for one mini-batch.
@@ -295,6 +325,33 @@ class RBM_PT(BernoulliRBM):
         fe_ = self._free_energy(v_, 0)
         return v.shape[1] * log_logistic(fe_ - fe)
 
+    def exchange(self, v, h, rng):
+        """
+        Propose an exachage between two different parallel chains.
+        Accept with probability (1/T_i - 1/T_j) * (E_i(v_i, h_i) - E(v_j, h_j))
+        Parameters
+        ----------
+        v : array-like, shape (n_temperatures, n_samples, n_features)
+            Values of the visible layer.
+        h : array-like, shape (n_temperatures, n_samples, n_components)
+            Values of the hidden layer.
+        rng : RandomState
+            Random number generator to use.
+        """
+        i = self.ex_ind
+        if i == self.n_temperatures - 1:
+            j = i - 1
+        elif i == 0:
+            j = 1
+        else:
+            j = i + np.random.randint(0, 2) * 2 - 1
+        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
+        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
+        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
+        rand = np.log(rng.uniform())
+        if prob > rand:
+            self.components_[(i, j)] = self.components_[(j, i)]
+        self.ex_ind = j
 
 
 class RBM_LPT(RBM_PT):
@@ -313,13 +370,26 @@ class RBM_LPT(RBM_PT):
         self.ex_dir = -1
 
     def exchange(self, v, h, rng):
+        """
+        Propose an exachage between two different parallel chains.
+        Have a lifted parameter ex_dir which saves the direction of the swap.
+        Accept with probability (1/T_i - 1/T_j) * (E_i(v_i, h_i) - E(v_j, h_j))
+        Parameters
+        ----------
+        v : array-like, shape (n_temperatures, n_samples, n_features)
+            Values of the visible layer.
+        h : array-like, shape (n_temperatures, n_samples, n_components)
+            Values of the hidden layer.
+        rng : RandomState
+            Random number generator to use.
+        """
         i = self.ex_ind
         if i == self.n_temperatures - 1:
             j = i - 1
-            self.ex_ind = -1
+            self.ex_dir = -1
         elif i == 0:
             j = 1
-            self.ex_ind = 1
+            self.ex_dir = 1
         else:
             j = i + self.ex_dir
 
@@ -327,8 +397,6 @@ class RBM_LPT(RBM_PT):
         en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
         prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
         rand = np.log(rng.uniform())
-        #print(prob)
-        #print(i)
         if prob > rand:
             self.components_[(i, j)] = self.components_[(j, i)]
         else:

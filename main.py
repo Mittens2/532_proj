@@ -91,10 +91,6 @@ X, Y = nudge_dataset(X, digits.target)
 #X,Y = shuffle(X,Y)
 
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
-
-#X = X[1:1000]
-#Y = Y[1:1000]
-
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     test_size=0.2,
                                                     random_state=0)
@@ -102,10 +98,10 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 # Models we will use
 logistic1 = linear_model.LogisticRegression(C=6000.0)
 logistic2 = linear_model.LogisticRegression(C=6000.0)
-rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=50, n_components=50)
-rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, cd_k=1)
-rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(10)]))
-rbm_lpt= RBM_LPT(random_state=0, verbose=True, learning_rate=0.05, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(10)]))
+rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50)
+rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, cd_k=5)
+rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(5)]))
+rbm_lpt= RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(5)]))
 
 classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
 classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
@@ -118,7 +114,16 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 #rbm_cd.fit(X_train, Y_train)
 
 # RBM with GridSearchCV
-# parameters = [{'n_iter': [20], 'n_components': [100], 'learning_rate': [0.01, 0.05, 0.1], 'cd_k': [1, 3, 5]}]
+parameters_cd = [{'n_iter': [500], 'n_components': [25, 50, 100],
+    'learning_rate': [0.001, 0.01, 0.1], 'cd_k': [1]}]
+parameters_pt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+    'learning_rate': [0.001, 0.01, 0.1],
+    'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+    np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)]))])]}]
+parameters_lpt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+    'learning_rate': [0.001, 0.01, 0.1],
+    'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+    np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)]))])]}]
 # clf = GridSearchCV(rbm_cd, parameters)
 # clf.fit(X_train, Y_train)
 # print(sorted(clf.cv_results_.keys()))
@@ -128,6 +133,16 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 rbm_lpt.fit(X_train, Y_train)
 rbm_pt.fit(X_train, Y_train)
 rbm_cd.fit(X_train, Y_train)
+
+plt.plot(np.arange(1, rbm_lpt.n_iter + 1), rbm_lpt.log_like, label='lpt')
+plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='pt')
+plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='cd')
+plt.xlabel('iteration')
+plt.ylabel('log likelihood')
+plt.title('Log likelihood tren')
+plt.legend()
+plt.show()
+
 
 v = X[1,]
 plt.figure(figsize=(4.2, 4))
