@@ -114,16 +114,16 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 #rbm_cd.fit(X_train, Y_train)
 
 # RBM with GridSearchCV
-parameters_cd = [{'n_iter': [500], 'n_components': [25, 50, 100],
-    'learning_rate': [0.001, 0.01, 0.1], 'cd_k': [1]}]
-parameters_pt = [{'n_iter': [500], 'n_components': [25, 50, 100],
-    'learning_rate': [0.001, 0.01, 0.1],
-    'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
-    np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)]))])]}]
-parameters_lpt = [{'n_iter': [500], 'n_components': [25, 50, 100],
-    'learning_rate': [0.001, 0.01, 0.1],
-    'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
-    np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)]))])]}]
+# parameters_cd = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1], 'cd_k': [1]}]
+# parameters_pt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1],
+#     'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+#     np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)])])]}]
+# parameters_lpt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1],
+#     'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+#     np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)])])]}]
 # clf = GridSearchCV(rbm_cd, parameters)
 # clf.fit(X_train, Y_train)
 # print(sorted(clf.cv_results_.keys()))
