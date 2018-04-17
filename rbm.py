@@ -13,9 +13,6 @@ import numpy as np
 import time
 from sklearn.externals.six.moves import xrange
 
-def exchange_state(RBM1, RBM2):
-    exchange = np.exp((1 / RBM1.temp - 1/ RBM2.temp) * (RBM1._free_energy))
-
 # RBM with classic CD as opposed to PCD
 class RBM_CD(BernoulliRBM):
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
