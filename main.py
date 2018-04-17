@@ -92,10 +92,6 @@ Y = mnist.target
 X,Y = shuffle(X,Y)
 
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
-
-X = X[1:10000]
-Y = Y[1:10000]
-
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     test_size=0.2,
                                                     random_state=0)
@@ -103,10 +99,10 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 # Models we will use
 logistic1 = linear_model.LogisticRegression(C=6000.0)
 logistic2 = linear_model.LogisticRegression(C=6000.0)
-rbm_pcd = RBM    (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100)
-rbm_cd  = RBM_CD (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, cd_k=1)
-rbm_pt  = RBM_PT (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
-rbm_lpt = RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
+rbm = BernoulliRBM(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50)
+rbm_cd = RBM_CD(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, cd_k=5)
+rbm_pt = RBM_PT(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(5)]))
+rbm_lpt= RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, n_iter=100, n_components=50, temp=np.array([0.8**i for i in range(5)]))
 
 classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
 classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
@@ -119,7 +115,16 @@ classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
 #rbm_cd.fit(X_train, Y_train)
 
 # RBM with GridSearchCV
-# parameters = [{'n_iter': [20], 'n_components': [100], 'learning_rate': [0.01, 0.05, 0.1], 'cd_k': [1, 3, 5]}]
+# parameters_cd = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1], 'cd_k': [1]}]
+# parameters_pt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1],
+#     'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+#     np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)])])]}]
+# parameters_lpt = [{'n_iter': [500], 'n_components': [25, 50, 100],
+#     'learning_rate': [0.001, 0.01, 0.1],
+#     'temp': [np.array([0.8**i for i in range(5)]), np.array([0.5**i for i in range(5),
+#     np.array([0.8**i for i in range(10)], np.array([0.5**i for i in range(10)])])]}]
 # clf = GridSearchCV(rbm_cd, parameters)
 # clf.fit(X_train, Y_train)
 # print(sorted(clf.cv_results_.keys()))
@@ -142,13 +147,17 @@ np.save("data/rbm_pt_weights",      rbm_pt.components_)
 np.save("data/rbm_pt_visible_bias", rbm_pt.intercept_visible_)
 np.save("data/rbm_pt_hidden_bias",  rbm_pt.intercept_hidden_)
 
-rbm_lpt.fit(X_train, Y_train)
-np.save("data/rbm_lpt_weights",      rbm_lpt.components_)
-np.save("data/rbm_lpt_visible_bias", rbm_lpt.intercept_visible_)
-np.save("data/rbm_lpt_hidden_bias",  rbm_lpt.intercept_hidden_)
+plt.plot(np.arange(1, rbm_lpt.n_iter + 1), rbm_lpt.log_like, label='lpt')
+plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='pt')
+plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='cd')
+plt.xlabel('iteration')
+plt.ylabel('log likelihood')
+plt.title('Log likelihood tren')
+plt.legend()
+plt.show()
 
-'''
-rbm_pt.v_sample_ = np.repeat(X[0].reshape(1,1,X[0].shape[0]), rbm_pt.n_temperatures, axis=0)
+
+v = X[1,]
 plt.figure(figsize=(4.2, 4))
 rbm_pt.ngibbs(1000)
 e = rbm_pt.expectation()
