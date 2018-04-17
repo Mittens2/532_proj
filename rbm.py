@@ -16,8 +16,57 @@ from sklearn.externals.six.moves import xrange
 def exchange_state(RBM1, RBM2):
     exchange = np.exp((1 / RBM1.temp - 1/ RBM2.temp) * (RBM1._free_energy))
 
+
+class RBM(BernoulliRBM):
+    def _mean_visibles(self, h):
+        """Sample from the distribution P(v|h).
+        Parameters
+        ----------
+        h : array-like, shape (n_samples, n_components)
+            Values of the hidden layer to sample from.
+        rng : RandomState
+            Random number generator to use.
+        Returns
+        -------
+        v : array-like, shape (n_samples, n_features)
+            Values of the visible layer.
+        """
+        p = np.dot(h, self.components_)
+        p += self.intercept_visible_
+        expit(p, out=p)
+        return (p)
+
+    def expectation(self):
+        """Perform one Gibbs sampling step.
+        Parameters
+        ----------
+        v : array-like, shape (n_samples, n_features)
+            Values of the visible layer to start from.
+        Returns
+        -------
+        v_new : array-like, shape (n_samples, n_features)
+            Values of the visible layer after one Gibbs step.
+        """
+        if not hasattr(self, "random_state_"):
+            self.random_state_ = check_random_state(self.random_state)
+        h_ = self._sample_hiddens(self.v_sample_, self.random_state_)
+        v_ = self._mean_visibles(h_)
+        return v_
+
+    def ngibbs(self, n):
+        if not hasattr(self, "random_state_"):
+            self.random_state_ = check_random_state(self.random_state)
+        v_ = self.v_sample_
+        for i in range(n):
+            h_ = self._sample_hiddens(v_, self.random_state_)
+            v_ = self._sample_visibles(h_, self.random_state_)
+        self.v_sample_ = v_
+
+        return v_
+
+
 # RBM with classic CD as opposed to PCD
-class RBM_CD(BernoulliRBM):
+class RBM_CD(RBM):
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
                  n_iter=10, verbose=0, random_state=None, cd_k=1):
         self.n_components = n_components
@@ -27,6 +76,7 @@ class RBM_CD(BernoulliRBM):
         self.verbose = verbose
         self.random_state = random_state
         self.cd_k = cd_k
+
 
     def _fit(self, v_pos, rng, ):
         """Inner fit for one mini-batch.
@@ -59,49 +109,10 @@ class RBM_CD(BernoulliRBM):
         h_neg[rng.uniform(size=h_neg.shape) < h_neg] = 1.0  # sample binomial
         self.h_samples_ = np.floor(h_neg, h_neg)
 
+
     def score(self, X, y):
         return self.score_samples(X).mean()
 
-    def _mean_visibles(self, h):
-        """Sample from the distribution P(v|h).
-        Parameters
-        ----------
-        h : array-like, shape (n_samples, n_components)
-            Values of the hidden layer to sample from.
-        rng : RandomState
-            Random number generator to use.
-        Returns
-        -------
-        v : array-like, shape (n_samples, n_features)
-            Values of the visible layer.
-        """
-        p = np.dot(h, self.components_)
-        p += self.intercept_visible_
-        expit(p, out=p)
-        return (p)
-
-    def continuous_gibbs(self, v):
-        """Perform one Gibbs sampling step.
-        Parameters
-        ----------
-        v : array-like, shape (n_samples, n_features)
-            Values of the visible layer to start from.
-        Returns
-        -------
-        v_new : array-like, shape (n_samples, n_features)
-            Values of the visible layer after one Gibbs step.
-        """
-        if not hasattr(self, "random_state_"):
-            self.random_state_ = check_random_state(self.random_state)
-        h_ = self._sample_hiddens(v, self.random_state_)
-        v_ = self._mean_visibles(h_)
-
-        return v_
-
-    def ngibbs(self, v, n):
-        for i in range(n):
-            v = self.gibbs(v)
-        return v
 
 # RBM for parallel tempering
 class RBM_PT(BernoulliRBM):
@@ -184,14 +195,13 @@ class RBM_PT(BernoulliRBM):
             j = 1
         else:
             j = i + np.random.randint(0, 2) * 2 - 1
-        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
-        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
+        en1 = -(v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
+        en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
         prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
         rand = np.log(rng.uniform())
-        #print(prob)
-        #print(i)
         if prob > rand:
-            self.components_[(i, j)] = self.components_[(j, i)]
+            v[(i, j),:,:] = v[(j, i),:,:]
+            h[(i, j),:,:] = h[(j, i),:,:]
         self.ex_ind = j
 
     def _fit(self, v_pos, rng, ):
@@ -258,6 +268,44 @@ class RBM_PT(BernoulliRBM):
         expit(p, out=p)
         return (rng.random_sample(size=p.shape) < p)
 
+    def _mean_visibles(self, h):
+        """Sample from the distribution P(v|h).
+        Parameters
+        ----------
+        h : array-like, shape (n_temperatures, n_samples, n_components)
+            Values of the hidden layer to sample from.
+        rng : RandomState
+            Random number generator to use.
+        Returns
+        -------
+        v : array-like, shape (n_temperatures, n_samples, n_features)
+            Values of the visible layer.
+        """
+        p = h @ self.components_
+        p += self.intercept_visible_[None, None, :]
+        p *= self.temp[:,None,None]
+        expit(p, out=p)
+        return p
+
+    def _sample_hiddens(self, v, rng):
+        """Sample from the distribution P(h|v).
+        Parameters
+        ----------
+        h : array-like, shape (n_temperatures, n_samples, n_components)
+            Values of the hidden layer to sample from.
+        rng : RandomState
+            Random number generator to use.
+        Returns
+        -------
+        v : array-like, shape (n_temperatures, n_samples, n_features)
+            Values of the visible layer.
+        """
+        p = v @ self.components_.T
+        p += self.intercept_hidden_[None, None, :]
+        p *= self.temp[:,None,None]
+        expit(p, out=p)
+        return (rng.random_sample(size=p.shape) < p)
+
 
 
     def score_samples(self, X):
@@ -295,6 +343,25 @@ class RBM_PT(BernoulliRBM):
         fe_ = self._free_energy(v_, 0)
         return v.shape[1] * log_logistic(fe_ - fe)
 
+    def expectation(self):
+        if not hasattr(self, "random_state_"):
+            self.random_state_ = check_random_state(self.random_state)
+        h_ = self._sample_hiddens(self.v_sample_, self.random_state_)
+        v_ = self._mean_visibles(h_)
+        return v_[0]
+
+    def ngibbs(self, n):
+        if not hasattr(self, "random_state_"):
+            self.random_state_ = check_random_state(self.random_state)
+        v_ = self.v_sample_
+        for i in range(n):
+            h_ = self._sample_hiddens(v_, self.random_state_)
+            v_ = self._sample_visibles(h_, self.random_state_)
+            self.exchange(v_, h_, self.random_state_)
+        self.v_sample_ = v_
+
+        return v_[0]
+
 
 
 class RBM_LPT(RBM_PT):
@@ -316,21 +383,22 @@ class RBM_LPT(RBM_PT):
         i = self.ex_ind
         if i == self.n_temperatures - 1:
             j = i - 1
-            self.ex_ind = -1
+            self.ex_dir = -1
         elif i == 0:
             j = 1
-            self.ex_ind = 1
+            self.ex_dir = 1
         else:
             j = i + self.ex_dir
 
-        en1 = (v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
-        en2 = (v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
+        en1 = -(v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ + h[i] @ self.components_ @ v[i].T)
+        en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ + h[j] @ self.components_ @ v[j].T)
         prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
         rand = np.log(rng.uniform())
         #print(prob)
-        #print(i)
+        #print(self.ex_ind, self.ex_dir)
         if prob > rand:
-            self.components_[(i, j)] = self.components_[(j, i)]
+            v[(i, j),:,:] = v[(j, i),:,:]
+            h[(i, j),:,:] = h[(j, i),:,:]
         else:
             self.ex_dir = -self.ex_dir
         self.ex_ind = j
