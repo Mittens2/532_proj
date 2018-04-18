@@ -102,39 +102,10 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     random_state=0)
 
 # Models we will use
-logistic1 = linear_model.LogisticRegression(C=6000.0)
-logistic2 = linear_model.LogisticRegression(C=6000.0)
 rbm_pcd = RBM    (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100)
 rbm_cd  = RBM_CD (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, cd_k=1)
 rbm_pt  = RBM_PT (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
 rbm_lpt = RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
-
-
-
-
-
-
-'''
-rbm_pcd.fit(X_train, Y_train)
-np.save("data/rbm_pcd_weights",      rbm.components_)
-np.save("data/rbm_pcd_visible_bias", rbm.intercept_visible_)
-np.save("data/rbm_pcd_hidden_bias",  rbm.intercept_hidden_)
-
-rbm_cd.fit(X_train, Y_train)
-np.save("data/rbm_cd_weights",      rbm_cd.components_)
-np.save("data/rbm_cd_visible_bias", rbm_cd.intercept_visible_)
-np.save("data/rbm_cd_hidden_bias",  rbm_cd.intercept_hidden_)
-
-rbm_pt.fit(X_train, Y_train)
-np.save("data/rbm_pt_weights",      rbm_pt.components_)
-np.save("data/rbm_pt_visible_bias", rbm_pt.intercept_visible_)
-np.save("data/rbm_pt_hidden_bias",  rbm_pt.intercept_hidden_)
-
-rbm_lpt.fit(X_train, Y_train)
-np.save("data/rbm_lpt_weights",      rbm_lpt.components_)
-np.save("data/rbm_lpt_visible_bias", rbm_lpt.intercept_visible_)
-np.save("data/rbm_lpt_hidden_bias",  rbm_lpt.intercept_hidden_)
-'''
 
 rbm_pcd.components_        = np.load("data/rbm_pcd_weights.npy")
 rbm_pcd.intercept_visible_ = np.load("data/rbm_pcd_visible_bias.npy")
