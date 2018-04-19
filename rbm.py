@@ -460,23 +460,23 @@ class RBM_PT(BernoulliRBM):
             + np.sum((h[i] @ self.components_) * v[i], axis=1))
         en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ \
             + np.sum(h[j] @ self.components_ * v[j], axis=1))
-        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
-        rand = np.log(rng.uniform())
-        if prob > rand:
-            v_copy = np.copy(v[i])
-            v[i] = v[j]
-            v[j] = v_copy
-            h_copy = np.copy(h[i])
-            h[i] = h[j]
-            h[j] = h_copy
-        # prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
-        # rand = np.log(rng.uniform(prob.shape[0]))
-        # v_copy = v[i][prob > rand]
-        # v[i][prob > rand] = v[j][prob > rand]
-        # v[j][prob > rand] = v_copy
-        # h_copy = h[i][prob > rand]
-        # h[i][prob > rand] = h[j][prob > rand]
-        # h[j][prob > rand] = h_copy
+        # prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
+        # rand = np.log(rng.uniform())
+        # if prob > rand:
+        #     v_copy = np.copy(v[i])
+        #     v[i] = v[j]
+        #     v[j] = v_copy
+        #     h_copy = np.copy(h[i])
+        #     h[i] = h[j]
+        #     h[j] = h_copy
+        prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
+        rand = np.log(rng.uniform(prob.shape[0]))
+        v_copy = v[i][prob > rand]
+        v[i][prob > rand] = v[j][prob > rand]
+        v[j][prob > rand] = v_copy
+        h_copy = h[i][prob > rand]
+        h[i][prob > rand] = h[j][prob > rand]
+        h[j][prob > rand] = h_copy
         self.ex_ind = j
 
 
@@ -492,10 +492,10 @@ class RBM_LPT(RBM_PT):
         self.n_iter = n_iter
         self.verbose = verbose
         self.random_state = random_state
-        self.ex_ind = self.n_temperatures - 1
-        self.ex_dir = -1
-        # self.ex_ind = (np.ones(self.batch_size) * self.n_temperatures - 1).astype(int)
-        # self.ex_dir = - np.ones(self.batch_size).astype(int)
+        # self.ex_ind = self.n_temperatures - 1
+        # self.ex_dir = -1
+        self.ex_ind = (np.ones(self.batch_size) * self.n_temperatures - 1).astype(int)
+        self.ex_dir = - np.ones(self.batch_size).astype(int)
 
 
     def exchange(self, v, h, rng):
@@ -512,55 +512,59 @@ class RBM_LPT(RBM_PT):
         rng : RandomState
             Random number generator to use.
         """
-        i = self.ex_ind
-        if i == self.n_temperatures - 1:
-            j = i - 1
-            self.ex_dir = -1
-        elif i == 0:
-            j = 1
-            self.ex_dir = 1
-        else:
-            j = i + self.ex_dir
-        en1 = -(v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ \
-            + np.sum((h[i] @ self.components_) * v[i], axis=1))
-        en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ \
-            + np.sum(h[j] @ self.components_ * v[j], axis=1))
-        prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
-        rand = np.log(rng.uniform())
-        if prob > rand:
-            v_copy = np.copy(v[i])
-            v[i] = v[j]
-            v[j] = v_copy
-            h_copy = np.copy(h[i])
-            h[i] = h[j]
-            h[j] = h_copy
-        else:
-            self.ex_dir = -self.ex_dir
-        # lift = self.ex_dir
         # i = self.ex_ind
-        #
-        # j = np.zeros(self.batch_size).astype(int)
-        # j[i == self.n_temperatures - 1] = self.n_temperatures - 2
-        # lift[i == self.n_temperatures] = -1
-        # j[i == 0] = 1
-        # lift[i == 0] = 1
-        # j[j == 0] = i[j == 0] + lift[j == 0]
-        #
-        # en = -(v @ self.intercept_visible_ + h @ self.intercept_hidden_ \
-        #     + np.sum(h @ self.components_ * v, axis=2))
-        # en1 = np.choose(i, en)
-        # en2 = np.choose(j, en)
-        #
-        # prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
-        # rand = np.log(rng.uniform(prob.shape[0]))
-        # v_copy = v[v_inds_i][prob > rand]
-        # v[v_inds_i][prob > rand] = v[v_inds_j][prob > rand]
-        # v[v_inds_j][prob > rand] = v_copy
-        # h_copy = h[h_inds_i][prob > rand]
-        # h[h_inds_i][prob > rand] = h[h_inds_j][prob > rand]
-        # h[h_inds_j][prob > rand] = h_copy
-        # self.ex_dir[prob > rand] *= -1
-        # self.ex_ind = j
+        # if i == self.n_temperatures - 1:
+        #     j = i - 1
+        #     self.ex_dir = -1
+        # elif i == 0:
+        #     j = 1
+        #     self.ex_dir = 1
+        # else:
+        #     j = i + self.ex_dir
+        # en1 = -(v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ \
+        #     + np.sum((h[i] @ self.components_) * v[i], axis=1))
+        # en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ \
+        #     + np.sum(h[j] @ self.components_ * v[j], axis=1))
+        # prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
+        # rand = np.log(rng.uniform())
+        # if prob > rand:
+        #     v_copy = np.copy(v[i])
+        #     v[i] = v[j]
+        #     v[j] = v_copy
+        #     h_copy = np.copy(h[i])
+        #     h[i] = h[j]
+        #     h[j] = h_copy
+        # else:
+        #     self.ex_dir = -self.ex_dir
+
+        lift = self.ex_dir
+        i = self.ex_ind
+        j = np.zeros(self.batch_size).astype(int)
+
+        # edge cases
+        j[i == self.n_temperatures - 1] = self.n_temperatures - 2
+        lift[i == self.n_temperatures - 1] = - 1
+        j[i == 0] = 1
+        lift[i == 0] = 1
+        j[j == 0] = i[j == 0] + lift[j == 0]
+
+        ind_i = [tuple(i), tuple(range(10))]
+        ind_j = [tuple(j), tuple(range(10))]
+        en1 = -(v[ind_i] @ self.intercept_visible_ + h[ind_i] @ self.intercept_hidden_ \
+            + np.sum(h[ind_i] @ self.components_ * v[ind_i], axis=1))
+        en2 = -(v[ind_j] @ self.intercept_visible_ + h[ind_j] @ self.intercept_hidden_ \
+            + np.sum(h[ind_j] @ self.components_ * v[ind_j], axis=1))
+
+        prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
+        rand = np.log(rng.uniform(prob.shape[0]))
+        v_copy = v[ind_i][prob > rand]
+        v[ind_i][prob > rand] = v[ind_j][prob > rand]
+        v[ind_j][prob > rand] = v_copy
+        h_copy = h[ind_i][prob > rand]
+        h[ind_i][prob > rand] = h[ind_j][prob > rand]
+        h[ind_j][prob > rand] = h_copy
+        self.ex_dir[prob > rand] *= -1
+        self.ex_ind = j
 
 # RBM with LPT on crack
 class RBM_LPTOC(RBM_PT):
@@ -594,8 +598,16 @@ class RBM_LPTOC(RBM_PT):
         # Get all energies
         en = -(v @ self.intercept_visible_ + h @ self.intercept_hidden_ \
             + np.sum(h @ self.components_ * v, axis=2))
-        prob = (self.temp[i:-1:2] - self.temp[i+1::2]) * (np.mean(en[i:-1:2], axis=1) - np.mean(en[i+1::2], axis=1))
-        rand = np.log(rng.uniform(size = prob.shape[0]))
+        # prob = (self.temp[i:-1:2] - self.temp[i+1::2]) * (np.mean(en[i:-1:2], axis=1) - np.mean(en[i+1::2], axis=1))
+        # rand = np.log(rng.uniform(size = prob.shape[0]))
+        # v_copy = np.copy(v[i:-1:2][prob > rand])
+        # v[i:-1:2][prob > rand] = v[i+1::2][prob > rand]
+        # v[i+1::2][prob > rand] = v_copy
+        # h_copy = np.copy(h[i:-1:2][prob > rand])
+        # h[i:-1:2][prob > rand] = h[i+1::2][prob > rand]
+        # h[i+1::2][prob > rand] = h_copy
+        prob = np.multiply((self.temp[i:-1:2] - self.temp[i+1::2]), (en[i:-1:2] - en[i+1::2]).T).T
+        rand = np.log(rng.uniform(size = prob.shape))
         v_copy = np.copy(v[i:-1:2][prob > rand])
         v[i:-1:2][prob > rand] = v[i+1::2][prob > rand]
         v[i+1::2][prob > rand] = v_copy

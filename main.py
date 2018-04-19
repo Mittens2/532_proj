@@ -107,7 +107,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                 random_state=0)
 
 # Models we will use
-best_params = {'n_iter':1, 'n_components':50, 'learning_rate':0.02}
+best_params = {'n_iter':100, 'n_components':50, 'learning_rate':0.02}
 n_iter = best_params['n_iter']
 n_components = best_params['n_components']
 learning_rate = best_params['learning_rate']
@@ -150,43 +150,43 @@ rbm_lptoc = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=
 # Training RBM-Logistic Pipeline
 #classifier1.fit(X_train, Y_train)
 #
-rbm_pcd.fit(X_train, Y_train)
-np.save("data/rbm_pcd_weights",      rbm_pcd.components_)
-np.save("data/rbm_pcd_visible_bias", rbm_pcd.intercept_visible_)
-np.save("data/rbm_pcd_hidden_bias",  rbm_pcd.intercept_hidden_)
-plt.plot(np.arange(1, rbm_pcd.n_iter + 1), rbm_pcd.log_like, label='PCD')
+# rbm_pcd.fit(X_train, Y_train)
+# np.save("data/rbm_pcd_weights",      rbm_pcd.components_)
+# np.save("data/rbm_pcd_visible_bias", rbm_pcd.intercept_visible_)
+# np.save("data/rbm_pcd_hidden_bias",  rbm_pcd.intercept_hidden_)
+# plt.plot(np.arange(1, rbm_pcd.n_iter + 1), rbm_pcd.log_like, label='PCD')
+#
+# rbm_cd.fit(X_train, Y_train)
+# np.save("data/rbm_cd_weights",      rbm_cd.components_)
+# np.save("data/rbm_cd_visible_bias", rbm_cd.intercept_visible_)
+# np.save("data/rbm_cd_hidden_bias",  rbm_cd.intercept_hidden_)
+# plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='CD')
 
-rbm_cd.fit(X_train, Y_train)
-np.save("data/rbm_cd_weights",      rbm_cd.components_)
-np.save("data/rbm_cd_visible_bias", rbm_cd.intercept_visible_)
-np.save("data/rbm_cd_hidden_bias",  rbm_cd.intercept_hidden_)
-plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='CD')
-
-rbm_pt.fit(X_train, Y_train)
-np.save("data/rbm_pt_weights",      rbm_pt.components_)
-np.save("data/rbm_pt_visible_bias", rbm_pt.intercept_visible_)
-np.save("data/rbm_pt_hidden_bias",  rbm_pt.intercept_hidden_)
-plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='PT')
-
+# rbm_pt.fit(X_train, Y_train)
+# np.save("data/rbm_pt_weights",      rbm_pt.components_)
+# np.save("data/rbm_pt_visible_bias", rbm_pt.intercept_visible_)
+# np.save("data/rbm_pt_hidden_bias",  rbm_pt.intercept_hidden_)
+# plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='PT')
+#
 rbm_lpt.fit(X_train, Y_train)
 np.save("data/rbm_lpt_weights",      rbm_lpt.components_)
 np.save("data/rbm_lpt_visible_bias", rbm_lpt.intercept_visible_)
 np.save("data/rbm_lpt_hidden_bias",  rbm_lpt.intercept_hidden_)
 plt.plot(np.arange(1, rbm_lpt.n_iter + 1), rbm_lpt.log_like, label='LPT')
+#
+# rbm_lptoc.fit(X_train, Y_train)
+# np.save("data/rbm_pt_weights",      rbm_lptoc.components_)
+# np.save("data/rbm_pt_visible_bias", rbm_lptoc.intercept_visible_)
+# np.save("data/rbm_pt_hidden_bias",  rbm_lptoc.intercept_hidden_)
+# plt.plot(np.arange(1, rbm_lptoc.n_iter + 1), rbm_lptoc.log_like, label='LPTP')
 
-rbm_lptoc.fit(X_train, Y_train)
-np.save("data/rbm_pt_weights",      rbm_lptoc.components_)
-np.save("data/rbm_pt_visible_bias", rbm_lptoc.intercept_visible_)
-np.save("data/rbm_pt_hidden_bias",  rbm_lptoc.intercept_hidden_)
-plt.plot(np.arange(1, rbm_lptoc.n_iter + 1), rbm_lptoc.log_like, label='LPTP')
-
-plt.xlabel('iteration')
-plt.ylabel('log likelihood')
-title = 'TOY Log likelihood trend'
-plt.title(title)
-plt.legend()
-savefig(title + '.png')
-plt.show()
+# plt.xlabel('iteration')
+# plt.ylabel('log likelihood')
+# title = 'TOY Log likelihood trend'
+# plt.title(title)
+# plt.legend()
+# savefig(title + '.png')
+# plt.show()
 
 
 # rbm_pt.v_sample_= X[1,]
