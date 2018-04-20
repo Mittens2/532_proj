@@ -1,0 +1,45 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DCB{\etalchar{+}}10}
+
+\bibitem[DCB{\etalchar{+}}10]{desjardins2010tempered}
+Guillaume Desjardins, Aaron Courville, Yoshua Bengio, Pascal Vincent, and
+  Olivier Delalleau.
+\newblock Tempered markov chain monte carlo for training of restricted
+  boltzmann machines.
+\newblock In {\em Proceedings of the thirteenth international conference on
+  artificial intelligence and statistics}, pages 145--152, 2010.
+
+\bibitem[FI14]{fischer2014training}
+Asja Fischer and Christian Igel.
+\newblock Training restricted boltzmann machines: An introduction.
+\newblock {\em Pattern Recognition}, 47(1):25--39, 2014.
+
+\bibitem[Hin02]{hinton2002training}
+Geoffrey~E Hinton.
+\newblock Training products of experts by minimizing contrastive divergence.
+\newblock {\em Neural computation}, 14(8):1771--1800, 2002.
+
+\bibitem[Hin12]{hinton2012practical}
+Geoffrey~E Hinton.
+\newblock A practical guide to training restricted boltzmann machines.
+\newblock In {\em Neural networks: Tricks of the trade}, pages 599--619.
+  Springer, 2012.
+
+\bibitem[TH09]{tieleman2009using}
+Tijmen Tieleman and Geoffrey Hinton.
+\newblock Using fast weights to improve persistent contrastive divergence.
+\newblock In {\em Proceedings of the 26th Annual International Conference on
+  Machine Learning}, pages 1033--1040. ACM, 2009.
+
+\bibitem[Tie08]{tieleman2008training}
+Tijmen Tieleman.
+\newblock Training restricted boltzmann machines using approximations to the
+  likelihood gradient.
+\newblock In {\em Proceedings of the 25th international conference on Machine
+  learning}, pages 1064--1071. ACM, 2008.
+
+\bibitem[{Wu}17]{wu_irreversible_2017}
+{Wu}.
+\newblock Irreversible {Parallel} {Tempering}, 2017.
+
+\end{thebibliography}

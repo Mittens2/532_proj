@@ -1,0 +1,13 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Restricted Boltzmann Machines}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{RBM Likelihood}{section.2}% 3
+\BOOKMARK [1][-]{section.3}{Contrastive Divergence}{}% 4
+\BOOKMARK [1][-]{section.4}{Tempering Methods}{}% 5
+\BOOKMARK [2][-]{subsection.4.1}{Parallel Tempering}{section.4}% 6
+\BOOKMARK [2][-]{subsection.4.2}{Lifted Parallel Tempering}{section.4}% 7
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Generalized Metropolis-Hastings Framework}{subsection.4.2}% 8
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Lifted Parallel Tempering Algorithm}{subsection.4.2}% 9
+\BOOKMARK [2][-]{subsection.4.3}{Deterministic Even/Odd Algorithm}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.4}{PT for RBM}{section.4}% 11
+\BOOKMARK [1][-]{section.5}{Experiments}{}% 12
+\BOOKMARK [1][-]{section.6}{References}{}% 13

@@ -1,0 +1,21 @@
+Contrastive Divergence ($CD$) is the standard way for training RBMs \cite{hinton2002training}.  $CD$ approximates $\E_P\left(\frac{\partial E}{\partial \theta}\right)$ with $\langle \frac{\partial E}{\partial \theta}\rangle^k$, the Monte-Carlo average after sampling the hidden and visible units using $k$ Gibbs Sampling updates. 
+
+CD begins by initializing the visible units to a given data vector. Then, in what is known as a "negative phase", the hidden units are updated via Gibbs sampling, with the visible units clamped. This is followed by a "positive" phase, where the visible units are updated with Gibbs sampling, while the hidden units are clamped using
+\[P(h_j = 1 \mid \mathbf{v}) = \sigma\Big( c_j + \textstyle{\sum_i} w_{ij}v_i \Big).\] 
+The resulting state of the visible and hidden units gives us the sample $\langle \frac{\partial E}{\partial \theta} \rangle ^0$. One can repeat this process, updating the visible and hidden units one layer at a time to obtain the estimate $\langle \frac{\partial E}{\partial \theta}\rangle ^k$ for any arbitrary $k$ \cite{hinton2012practical}. When $k>1$, we will call this algorithm CD-$k$.
+
+To obtain an unbiased estimator of $\E_P\left(\frac{\partial E}{\partial \theta}\right)$, this process must run to equilibrium, requiring many iterations. However, this is computationally expensive. Hinton \cite{hinton2002training} notes that after 1 iteration, it can be seen in which direction the model is wandering. Hinton proposes the simplified learning rule
+\[\Delta \theta = \left\langle\frac{\partial E}{\partial \theta} \right\rangle^0 - \left\langle \frac{\partial E}{\partial \theta}\right \rangle^1\]
+CD guarantees that weights are updated in the correct direction, albeit with wrong magnitudes \cite{tieleman2008training}. 
+
+By using a small $k$, one gets biased estimates of the probability distribution underlying the model. Thus, one does not necessarily reach a minimum of the negative log likelihood during training. More problematically, Fischer and Igel \cite{fischer2010empirical} showed that the log-likelihood can even decrease as more iterations of gradient ascent are taken.
+
+
+\subsection{PCD}
+
+Although CD works for simple models, it can lead to bad models if the mixing rate of the Markov Chain is low. Tieleman \cite{tieleman2008training} notes that each time a Markov Chain is reinitialized with a data vector to approximate $\E_P\left(\frac{\partial E}{\partial \theta}\right)$, valuable information about the model is lost. Tieleman proposes the use of persistent chains. Rather than being initialized to a data vector, chains "persists", beginning with the final state of a previous Markov Chain. This variant of contrastive divergence is called Persistent contrastive divergence (PCD).
+
+However, Tieleman, and Hinton \cite{tieleman2009using} note that PCD still relies on approximating the gradient of the KL divergence. PCD minimizes a difference of KL divergences \[KL(P_{data} \mid \mid P) - KL(P^t \mid \mid P),\] 
+where $P_t$ is the distribution of persistent Markov chain after time $t$. The second term is an error incurred for not running the chain to equilibrium.
+
+Desjardins \cite{desjardins2010tempered} notes that although the error term is small relative to the desired term in the beginning of training, as $t$ increases, the error term dominates due to the desired term vanishing, and the mixing of the chain decreasing. PCD encourages the model to settle to recently visited modes in successive iterations, leading to few deep minima in the energy. 

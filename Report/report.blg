@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: report.aux
+The style file: alpha.bst
+Database file #1: 01.bib
+Warning--I didn't find a database entry for "fischer2010empirical"
+Warning--I didn't find a database entry for "fischer2015training"
+You've used 7 entries,
+            2543 wiz_defined-function locations,
+            606 strings with 5686 characters,
+and the built_in function-call counts, 3288 in all, are:
+= -- 348
+> -- 105
+< -- 8
++ -- 34
+- -- 33
+* -- 207
+:= -- 486
+add.period$ -- 23
+call.type$ -- 7
+change.case$ -- 41
+chr.to.int$ -- 7
+cite$ -- 7
+duplicate$ -- 151
+empty$ -- 268
+format.name$ -- 43
+if$ -- 723
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 6
+newline$ -- 38
+num.names$ -- 21
+pop$ -- 51
+preamble$ -- 1
+purify$ -- 48
+quote$ -- 0
+skip$ -- 133
+stack$ -- 0
+substring$ -- 244
+swap$ -- 50
+text.length$ -- 8
+text.prefix$ -- 4
+top$ -- 0
+type$ -- 56
+warning$ -- 0
+while$ -- 33
+width$ -- 9
+write$ -- 94
+(There were 2 warnings)
