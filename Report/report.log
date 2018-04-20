@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  20 APR 2018 14:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  20 APR 2018 14:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -809,12 +809,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
                                                   \fi \fi 
 l.58 \end{align*}
                  ]) (./sec_3_CD.tex [3]) (./sec_4_PT.tex [4] [5] [6] [7])
-[8]
-
-LaTeX Warning: Citation `salakhutdinov2009tempered' on page 9 undefined on inpu
-t line 146.
-
-(./sec_5_experiments.tex
+[8] (./sec_5_experiments.tex
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
 (hyperref)                than one, level fixed on input line 4.
@@ -825,13 +820,13 @@ Overfull \hbox (13.91653pt too wide) in paragraph at lines 10--11
 ython's scikit-learn li-brary [[]PVG$[]$11[]].
  []
 
-<../figs/digits.png, id=228, 614.295pt x 424.58624pt>
+<../figs/digits.png, id=230, 614.295pt x 424.58624pt>
 File: ../figs/digits.png Graphic file (type png)
  <use ../figs/digits.png>
 Package pdftex.def Info: ../figs/digits.png used on input line 21.
 (pdftex.def)             Requested size: 307.14674pt x 212.2926pt.
 
-[10] <../figs/MNIST.png, id=240, 1229.59375pt x 845.1575pt>
+[10] <../figs/MNIST.png, id=242, 1229.59375pt x 845.1575pt>
 File: ../figs/MNIST.png Graphic file (type png)
 
 <use ../figs/MNIST.png>
@@ -865,19 +860,12 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 5A89DCFA49AD08AD831A90319AAC3580;1483.
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
  ) 
 Here is how much of TeX's memory you used:
  20426 strings out of 493014
  380841 string characters out of 6133351
- 461983 words of memory out of 5000000
+ 462034 words of memory out of 5000000
  23550 multiletter control sequences out of 15000+600000
  12148 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -897,10 +885,10 @@ ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
 e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive
 /2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/
 2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on report.pdf (14 pages, 329796 bytes).
+Output written on report.pdf (14 pages, 329934 bytes).
 PDF statistics:
- 325 PDF objects out of 1000 (max. 8388607)
- 287 compressed objects within 3 object streams
+ 326 PDF objects out of 1000 (max. 8388607)
+ 288 compressed objects within 3 object streams
  60 named destinations out of 1000 (max. 500000)
  199 words of extra memory for PDF output out of 10000 (max. 10000000)
 

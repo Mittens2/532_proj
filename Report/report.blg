@@ -11,6 +11,10 @@ Repeated entry---line 230 of file 01.bib
  : @inproceedings{salakhutdinov2009tempered
  :                                         ,
 I'm skipping whatever remains of this entry
+Repeated entry---line 239 of file 01.bib
+ : @inproceedings{fischer2010empirical
+ :                                    ,
+I'm skipping whatever remains of this entry
 Warning--empty journal in geyer1991markov
 You've used 16 entries,
             2543 wiz_defined-function locations,
@@ -53,4 +57,4 @@ warning$ -- 1
 while$ -- 75
 width$ -- 19
 write$ -- 209
-(There were 2 error messages)
+(There were 3 error messages)
