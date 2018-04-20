@@ -1,7 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.17)  20 APR 2018 14:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  20 APR 2018 14:48
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
 **report.tex
 (./report.tex
@@ -837,9 +836,6 @@ Package pdftex.def Info: ../figs/digits.png used on input line 21.
                                                   \fi \fi 
 l.26 
       <../figs/digits.png>]
-
-LaTeX Warning: Reference `•' on page 13 undefined on input line 27.
-
 <../figs/MNIST.png, id=263, 1229.59375pt x 845.1575pt>
 File: ../figs/MNIST.png Graphic file (type png)
  <use ../figs/MNIST.png>
@@ -867,20 +863,16 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 155.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 155.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: AB2B3FCB13C576987A084F896EA3F0EC;1552.
-
-
-LaTeX Warning: There were undefined references.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 155.
  ) 
 Here is how much of TeX's memory you used:
- 20471 strings out of 493014
- 381519 string characters out of 6133351
+ 20470 strings out of 493014
+ 381514 string characters out of 6133351
  467107 words of memory out of 5000000
- 23584 multiletter control sequences out of 15000+600000
+ 23583 multiletter control sequences out of 15000+600000
  12148 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,14n,73p,1011b,669s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,14n,73p,1010b,669s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
 ></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
@@ -897,7 +889,7 @@ e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/
 2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2
 016/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/20
 16/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on report.pdf (16 pages, 350884 bytes).
+Output written on report.pdf (16 pages, 350663 bytes).
 PDF statistics:
  349 PDF objects out of 1000 (max. 8388607)
  307 compressed objects within 4 object streams
