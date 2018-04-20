@@ -3,47 +3,51 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: report.aux
 The style file: alpha.bst
 Database file #1: 01.bib
+Repeated entry---line 33 of file 01.bib
+ : @article{kofke2002acceptance
+ :                             ,
+I'm skipping whatever remains of this entry
 Warning--I didn't find a database entry for "fischer2010empirical"
-Warning--I didn't find a database entry for "fischer2015training"
-You've used 7 entries,
+Warning--empty journal in geyer1991markov
+You've used 13 entries,
             2543 wiz_defined-function locations,
-            606 strings with 5686 characters,
-and the built_in function-call counts, 3288 in all, are:
-= -- 348
-> -- 105
-< -- 8
-+ -- 34
-- -- 33
-* -- 207
-:= -- 486
-add.period$ -- 23
-call.type$ -- 7
-change.case$ -- 41
-chr.to.int$ -- 7
-cite$ -- 7
-duplicate$ -- 151
-empty$ -- 268
-format.name$ -- 43
-if$ -- 723
+            643 strings with 6614 characters,
+and the built_in function-call counts, 5764 in all, are:
+= -- 599
+> -- 227
+< -- 11
++ -- 77
+- -- 76
+* -- 392
+:= -- 895
+add.period$ -- 41
+call.type$ -- 13
+change.case$ -- 78
+chr.to.int$ -- 13
+cite$ -- 14
+duplicate$ -- 246
+empty$ -- 438
+format.name$ -- 93
+if$ -- 1220
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 6
-newline$ -- 38
-num.names$ -- 21
-pop$ -- 51
+missing$ -- 13
+newline$ -- 68
+num.names$ -- 39
+pop$ -- 85
 preamble$ -- 1
-purify$ -- 48
+purify$ -- 92
 quote$ -- 0
-skip$ -- 133
+skip$ -- 215
 stack$ -- 0
-substring$ -- 244
-swap$ -- 50
-text.length$ -- 8
-text.prefix$ -- 4
+substring$ -- 393
+swap$ -- 64
+text.length$ -- 11
+text.prefix$ -- 6
 top$ -- 0
-type$ -- 56
-warning$ -- 0
-while$ -- 33
-width$ -- 9
-write$ -- 94
-(There were 2 warnings)
+type$ -- 100
+warning$ -- 1
+while$ -- 58
+width$ -- 15
+write$ -- 169
+(There was 1 error message)

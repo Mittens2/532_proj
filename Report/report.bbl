@@ -1,5 +1,11 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
-\begin{thebibliography}{DCB{\etalchar{+}}10}
+\begin{thebibliography}{LDMT09}
+
+\bibitem[ARR11]{atchade_towards_2011}
+Yves~F. Atchadé, Gareth~O. Roberts, and Jeffrey~S. Rosenthal.
+\newblock Towards optimal scaling of metropolis-coupled {Markov} chain {Monte}
+  {Carlo}.
+\newblock {\em Statistics and Computing}, 21(4):555--568, October 2011.
 
 \bibitem[DCB{\etalchar{+}}10]{desjardins2010tempered}
 Guillaume Desjardins, Aaron Courville, Yoshua Bengio, Pascal Vincent, and
@@ -9,10 +15,20 @@ Guillaume Desjardins, Aaron Courville, Yoshua Bengio, Pascal Vincent, and
 \newblock In {\em Proceedings of the thirteenth international conference on
   artificial intelligence and statistics}, pages 145--152, 2010.
 
+\bibitem[DHN00]{diaconis2000analysis}
+Persi Diaconis, Susan Holmes, and Radford~M Neal.
+\newblock Analysis of a nonreversible markov chain sampler.
+\newblock {\em Annals of Applied Probability}, pages 726--752, 2000.
+
 \bibitem[FI14]{fischer2014training}
 Asja Fischer and Christian Igel.
 \newblock Training restricted boltzmann machines: An introduction.
 \newblock {\em Pattern Recognition}, 47(1):25--39, 2014.
+
+\bibitem[Gey91]{geyer1991markov}
+Charles~J Geyer.
+\newblock Markov chain monte carlo maximum likelihood.
+\newblock 1991.
 
 \bibitem[Hin02]{hinton2002training}
 Geoffrey~E Hinton.
@@ -24,6 +40,21 @@ Geoffrey~E Hinton.
 \newblock A practical guide to training restricted boltzmann machines.
 \newblock In {\em Neural networks: Tricks of the trade}, pages 599--619.
   Springer, 2012.
+
+\bibitem[Kof02]{kofke2002acceptance}
+David~A Kofke.
+\newblock On the acceptance probability of replica-exchange monte carlo trials.
+\newblock {\em The Journal of chemical physics}, 117(15):6911--6914, 2002.
+
+\bibitem[LDMT09]{lingenheil2009efficiency}
+Martin Lingenheil, Robert Denschlag, Gerald Mathias, and Paul Tavan.
+\newblock Efficiency of exchange schemes in replica exchange.
+\newblock {\em Chemical Physics Letters}, 478(1-3):80--84, 2009.
+
+\bibitem[SR{\etalchar{+}}10]{stoltz2010free}
+Gabriel Stoltz, Mathias Rousset, et~al.
+\newblock {\em Free energy computations: A mathematical perspective}.
+\newblock World Scientific, 2010.
 
 \bibitem[TH09]{tieleman2009using}
 Tijmen Tieleman and Geoffrey Hinton.

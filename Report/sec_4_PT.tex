@@ -1,0 +1,84 @@
+As we have discussed previously, the problem of learning the model for an RBM can be boiled down to effectively we can approximate $\E_P\left(\frac{\partial E}{\partial \theta}\right)$. In order to do this, we had to resort to Gibbs Sampling. 
+Gibbs sampling performs local updates to generate a Markov Chain with stationary distribution $P(\textbf{v},\textbf{h})$ which is complex and multi-modal. Despite the theoretical guaranteed convergence of Gibb's sampling, the local nature of the updates means that chain can have a very difficult time traversing the modes of $P$ and  has a tendency to get trapped exploring the local areas of our sample space of high probability. This means that certain modes are over-represented, while other are under-represented and leading to a poor approximation of our expectation.
+
+Parallel tempering (PT) is a class of Monte Carlo methods first introduced by Geyer in \cite{geyer1991markov} that improve the miximng our our MCMC chain, by simultaneuously running $N$ MCMC chains in parallel but at different temperatures. The higher temperature chains focus on exploration of the state space, while the room temperature chain focus on the accuracy of samples. In order for there to be communication between the hot and room temperature chains, we periodically propose swaps between the chains in such a what that does not propose 
+
+
+\subsection{Parallel Tempering}\label{sec_PT}
+Let $P$ be a Gibbs distribution over some sample space $\Omega$ of the form,
+\[P(x)=\frac{1}{Z} \exp(-E(x)).\]
+Note that $E$ can be that of an RBM but does not have to be. We define our inverse-temperature space as $\mathcal{B}=[\beta_{\min},1]$, for $0\leq \beta_{\min}<1$. Given $\beta\in\mathcal{B}$, let $P^{(\beta)}$ the probability distribution identified with the un-normalized density $P(x)^\beta$, which we can write
+\[P^{(\beta)}(x)= \frac{1}{Z(\beta)} \exp(-\beta E(x)),\]
+where $Z(\beta)$ is the partition function. 
+
+Given a sequence of inverse temperatures $0\leq\beta_{\min}= \beta_N<\cdots<\beta_{1}<\beta_0=1$, we define the measure $\tilde{P}$ on $\Omega^{N+1}$ by,
+\[\tilde{P}=P^{(\beta_0)}\times\cdots\times P^{(\beta_N)}.\]
+In parallel tempering we construct a Markov chain $\tilde{X}_n=(X_n^{0},\cdots, X^{N}_n)$ on $\Omega^N$ with stationary distribution $\tilde{\pi}$. We update $X_n$ by alternate between two different type of dynamics: exploration and communication. 
+
+During the exploration phase, we allow for each $X_n^i$ to independently explore $\Omega$ according to $P^{(\beta_i)}$ via our favourite MCMC algorithm such as Gibbs Sampling. Since MCMC updates of each component $i$ leaves $P^{(\beta_i)}$ invariant, we have the exploration phase leaves $\tilde{P}$ invariant.
+
+During the communication phase, we propose a swap between the $\beta_i$ and $\beta_j$ components of $\tilde{X}_n$, in other words we swap $X^i_n$ and $X^j_n$ in $\tilde{X}_n$. To simplify notation, given $x=(x^0,\cdots,x^i,\cdots,x^j,\cdots, x^N)$, we will define $x_{(i,j)}=(x^0,\cdots,x^j,\cdots,x^i,\cdots,x^N)$. So the proposed state during the communication phase is $(\tilde{X}_n)_{(i,j)}$. In order to keep $\tilde{X}_n$ stationary with respect to $\tilde{P}$, we can make this update reversible by accepting this proposed swap according to the Metropolis acceptance,
+\begin{align*}
+\alpha
+&=1\wedge\frac{\tilde{P}((\tilde{X}_n)_{(i,j)})}{\tilde{P}(\tilde{X}_n)}\\
+&=1\wedge\frac{P^{(\beta_i)}(X_n^j)P^{(\beta_j)}(X_n^i)}{P^{(\beta_i)}(X_n^i)P^{(\beta_j)}(X_n^j)}\\
+&=1\wedge\exp\left[(\beta_j-\beta_i)(E(X_n^j)-E(X_n^i))\right]\numberthis\label{accept_ratio}
+\end{align*}
+Since the likelihood of acceptance is proportional to the change in temperature, we usually restrict to our swaps to nearest neighbours during the communication phase.
+
+We refer to the sequence $(X_n^{i})_{n\geq0}$ as the $i$-th chain, the sequence of states at a particular temperature $\beta_i$. During the communication phase, we can view a proposed state as a swap between two states at while fixing the temperature. Alternatively we can view the communication phase as increase or decreasing the temperature of the state. We will call this sequence of states with varying temperatures as a replica. In particular, the $i$-th replica is the sequence $(X_n^{\eta^i_n})$, where $\eta^i_0=i$ and $\eta^i_n$ represents the temperature of state $X_n$ at time $n$. The $i$-th replica follows the trajectory of the $X_0^{i}$ state through the state space as it's temperature changes. A change in $\eta^i_n$ indicates a successful swap in the communication phase at time $n$.
+
+\subsubsection{Temperature spacing}
+The mixing of our MCMC algorithm during the exploration phase improves as $\beta$ decreases as $P^{(\beta)}(x)$ ``flattens'' our and makes it modes less pronounces. The temperature spacing is somewhat important as we see the acceptance probability of a proposed swap depends on the change in inverse-temperature as seen in \eqref{accept_ratio}. So if the change in inverse-temperature during a swap is small, we are far more likely to accept, but we will not be exploring a significantly better mixing chain. Alternatively, if the change in inverse-temperature is large, we will potentially swap with a better mixing chain, but the acceptance ration in \eqref{accept_ratio} will be potentially very small. We want to chose the temperature spacing in such a way that maximizes the speed we can communicate information from the high temperature chains, to the room temperature chains.
+
+In the high-dimensional setting, the literature seems to suggest that we want approximately to be roughly 23.4\%  \cite{atchade_towards_2011}. However to achieve this optimate temperature spacing, is in general quite difficult to attain and is more of a theoretical guideline. In practice, it can be shown that a geometric spacing can be a good temperature spacing for many applications of interest \cite{atchade_towards_2011},\cite{kofke2002acceptance}. For the purpose of this project we will assume $\beta_n=\gamma^n$ for some $\gamma\in (0,1)$.
+\subsubsection{Problems of Reversibility}
+In the classical parallel tempering algorithm, because of detailed balance condition for the swaps, the replicas must be proposed a swap that can potentially raise or lower the temperature. This forces the temperature of the replica to traverse the inverse-temperature space $\mathcal{B}$ in a random walk fashion and leads to diffusive behaviour. It takes roughly $O(N^2)$ number of swap attempts  to communicate information between $N$ chains \cite{diaconis2000analysis}. This is not favourable as the goal is to have the information from the high temperature states reach room temperature as quickly as possible, without getting distracted along the way. 
+
+In order to eliminate this diffusive behaviour and speed up the rate of communication between states, we need to construct swap proposals that are non-reversible. We will discuss two such methods called lifted parallel tempering (LPT) outlined in \cite{wu_irreversible_2017} and the closely related deterministic even/odd algorithm which we will refer to as LTPD as discussed in \cite{lingenheil2009efficiency}. 
+
+\subsection{Lifted Parallel Tempering}
+Before we discuss LPT, we will need to introduce the Generalized Metropolis Hastings framework as outlined in \cite{stoltz2010free}.
+\subsubsection{Generalized Metropolis-Hastings Framework}
+Suppose we have a probability measure $P$ over measurable space $(\Omega,\mathcal{F})$ and a function $S:(\Omega,\mathcal{F})to (\Omega,\mathcal{F})$ is a measure preserving involution for $P$. If $Q(y|x)$ is a Metropolis-proposal kernel, then we will construct a Markov transition kernel as follows. Suppose we are at state $x$, we propose a state $y$ via the kernel $\tilde{Q}$ given by $\tilde{Q}(y|x)=Q(S(dy)|x)$ and accept $y$ as a new state with probability 
+\[\alpha(x,y)=\frac{\pi(y)\tilde{Q}(y|x)}{\pi(x)\tilde{Q}(x|y)}.\]
+This induces the reversible Metropolis transition kernel, 
+\[\tilde{K}(y|x)=\alpha(x,y)\tilde{Q}(y|x)+\left(1-\int\alpha(x,y)\tilde{Q}(y|x)dy\right)\delta_x(y).\]
+which has stationary distribution $P$. Since $\tilde{K}$ and $S$ preserve $P$, then so does $K\equiv S\circ \tilde{K}$, which is given by,
+\begin{align*}
+K(y|x)=\alpha(x,y)Q(y|x)+\left(1-\int\alpha(x,y)Q(y|x)dy\right)\delta_{S(x)}(y).
+\end{align*}
+Effectively, we make a proposal according to $Q$, which is accepted with probability $\alpha$ and apply $S$ if the proposal is rejected. This in general produces an non-reversible scheme as the composition of two reversible kernels is not necessarily reversible.
+\subsubsection{Lifted Parallel Tempering Algorithm}
+Suppose we have the same set-up as PT outlined in \S\ref{sec_PT}. The only modification we will make for LPT will be for the communication phase.
+
+We have $N$ additional chains running simultaneously with joint distribution $\tilde{P}=\pi^{(\beta_0)}\times\dots\times\pi^{(\beta_N)}$. We denote the state at time $n$ by $X_n=(X^0_n,\dots, X^N_n)$, where $X^i$ is at temperature $\beta_i$. We will choose to make one of the replicas ``lifted'', say replica $\eta_0$.  In addition we introduce the lifted parameters $(\eta_n,\varepsilon_n)\in \{0,1,\dots,N\}\times\{\pm 1\}$. Here $\eta_n$ represents temperature index of the $\eta_0$-th replica (which we will call the ``lifted'' replica) and $\varepsilon_n$ represents the direction the replica will attempt to swap, i.e, the next proposed swap will be between $X^{\eta_n}_n$ and $X^{\eta_n+\eps_n}_n$. 
+
+To deal with the boundary cases, note that the replica is at temperature $\beta_0$ or $\beta_N$ then it must be proposed a swap with the state at temperature $\beta_1$ and $\beta_{N-1}$ respectively. So we have
+\[(\eta_n,\varepsilon_n)\in \{0,1,\dots,N\}\times\{\pm 1\}\backslash\{(0,-1),(N,1)\}\equiv \mathcal{X}. \]
+
+Let $Z_n=(X_n,\eta_n,\epsilon_n)$ be a Markov chain in enlarged space will be $\Omega^{N+1}\times\mathcal{X}$. Suppose we are working with the deterministic proposal
+\[Q(y|z)=\delta_{\phi(z)}(y)\]
+given by, 
+\begin{align*}
+\phi(X,\eta,\eps)=
+\begin{cases}
+(X_{(\eta,\eta+\eps)},\eta+\eps,\eps) &   0<\eta+\eps<N,\\
+(X_{(\eta,\eta+\eps)},\eta+\eps,-\eps) &  \mathrm{Otherwise}.\\
+\end{cases}
+\end{align*}
+We also define the involution $S:\Omega^{N+1}\times\mathcal{X}$ given by,
+\begin{align*}
+S(X,\eta,\eps)=
+\begin{cases}
+(X,\eta,-\eps) &   0<\eta+\eps<N,\\
+(X,\eta,\eps) &  \mathrm{Otherwise},
+\end{cases}
+\end{align*}
+which preserves the measure $\tilde{\pi}^P\times\mathrm{Unif}(\mathcal{X})$. Together $Q$ and $S$ give us the recipe for the lifted parallel tempering algorithm. 
+
+If a swap is accepted and increases (decreases) the temperature of the replica, then the next swap will also be propose an increase (decrease) in temperature. If the swap is rejected, then the next swap will propose a decrease (increase) in temperature. If the replica achieves a temperature of either reaches $\beta_0$ or $\beta_N$, then we reverse the direction of the swaps. To summarize in LPT, the lifted replica is proposes swaps with a ``momentum'' (i.e. the communication resists change of direction). It was shown in \cite{diaconis2000analysis} that this persisted swapping required $O(N)$ number of swap attempts on average to swap information between $N$ chains compared to the $O(N^2)$ number of swaps required for PT.
+
+\subsection{Deterministic Even/Odd Algorithm}
+Finally we will introduce one more variant of PT that has become quite popular in practice recently call the deterministic even/odd algorithm as outlined in  (LPTD).
+\subsection{PT for RBM}

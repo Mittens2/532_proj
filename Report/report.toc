@@ -5,10 +5,12 @@
 \contentsline {subsection}{\numberline {3.1}PCD}{4}{subsection.3.1}
 \contentsline {section}{\numberline {4}Tempering Methods}{4}{section.4}
 \contentsline {subsection}{\numberline {4.1}Parallel Tempering}{5}{subsection.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}Temperature spacing}{6}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}Problems of Reversibility}{6}{subsubsection.4.1.2}
 \contentsline {subsection}{\numberline {4.2}Lifted Parallel Tempering}{6}{subsection.4.2}
 \contentsline {subsubsection}{\numberline {4.2.1}Generalized Metropolis-Hastings Framework}{6}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}Lifted Parallel Tempering Algorithm}{6}{subsubsection.4.2.2}
-\contentsline {subsection}{\numberline {4.3}Deterministic Even/Odd Algorithm}{7}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}PT for RBM}{7}{subsection.4.4}
-\contentsline {section}{\numberline {5}Experiments}{7}{section.5}
-\contentsline {section}{\numberline {6}References}{7}{section.6}
+\contentsline {subsubsection}{\numberline {4.2.2}Lifted Parallel Tempering Algorithm}{7}{subsubsection.4.2.2}
+\contentsline {subsection}{\numberline {4.3}Deterministic Even/Odd Algorithm}{8}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}PT for RBM}{8}{subsection.4.4}
+\contentsline {section}{\numberline {5}Experiments}{8}{section.5}
+\contentsline {section}{\numberline {6}References}{8}{section.6}
