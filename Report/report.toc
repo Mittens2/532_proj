@@ -18,4 +18,3 @@
 \contentsline {subsubsection}{\numberline {5.1.1}Scikit-Learn Digit Dataset}{9}{subsubsection.5.1.1}
 \contentsline {subsubsection}{\numberline {5.1.2}MNIST Dataset}{10}{subsubsection.5.1.2}
 \contentsline {section}{\numberline {6}Discussion}{11}{section.6}
-\contentsline {section}{\numberline {7}References}{12}{section.7}
