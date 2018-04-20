@@ -7,46 +7,50 @@ Repeated entry---line 33 of file 01.bib
  : @article{kofke2002acceptance
  :                             ,
 I'm skipping whatever remains of this entry
+Repeated entry---line 230 of file 01.bib
+ : @inproceedings{salakhutdinov2009tempered
+ :                                         ,
+I'm skipping whatever remains of this entry
 Warning--empty journal in geyer1991markov
-You've used 15 entries,
+You've used 16 entries,
             2543 wiz_defined-function locations,
-            653 strings with 7119 characters,
-and the built_in function-call counts, 7027 in all, are:
-= -- 724
-> -- 311
-< -- 12
-+ -- 108
-- -- 107
-* -- 497
-:= -- 1101
-add.period$ -- 48
-call.type$ -- 15
-change.case$ -- 98
-chr.to.int$ -- 15
-cite$ -- 16
-duplicate$ -- 286
-empty$ -- 514
-format.name$ -- 125
-if$ -- 1478
+            659 strings with 7371 characters,
+and the built_in function-call counts, 7620 in all, are:
+= -- 780
+> -- 336
+< -- 14
++ -- 115
+- -- 114
+* -- 536
+:= -- 1185
+add.period$ -- 51
+call.type$ -- 16
+change.case$ -- 103
+chr.to.int$ -- 16
+cite$ -- 17
+duplicate$ -- 315
+empty$ -- 562
+format.name$ -- 134
+if$ -- 1611
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 15
-newline$ -- 78
-num.names$ -- 45
-pop$ -- 104
+missing$ -- 16
+newline$ -- 83
+num.names$ -- 50
+pop$ -- 112
 preamble$ -- 1
-purify$ -- 114
+purify$ -- 120
 quote$ -- 0
-skip$ -- 250
+skip$ -- 277
 stack$ -- 0
-substring$ -- 470
-swap$ -- 76
-text.length$ -- 12
-text.prefix$ -- 6
+substring$ -- 517
+swap$ -- 89
+text.length$ -- 14
+text.prefix$ -- 7
 top$ -- 0
-type$ -- 116
+type$ -- 124
 warning$ -- 1
-while$ -- 69
-width$ -- 18
-write$ -- 196
-(There was 1 error message)
+while$ -- 75
+width$ -- 19
+write$ -- 209
+(There were 2 error messages)
