@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  20 APR 2018 12:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  20 APR 2018 13:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -808,8 +808,8 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.58 \end{align*}
-                 ]) (./sec_3_CD.tex [3]) [4] [5] [6] [7] [8]
-(./sec_5_experiments.tex
+                 ]) (./sec_3_CD.tex [3]) (./sec_4_PT.tex [4] [5] [6] [7])
+[8] (./sec_5_experiments.tex
 Underfull \hbox (badness 10000) in paragraph at lines 2--3
 
  []
@@ -861,34 +861,48 @@ Underfull \hbox (badness 10000) in paragraph at lines 27--28
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.33 
-      <../figs/digits.png>] <../figs/MNIST.png, id=231, 462.528pt x 346.896pt>
+      <../figs/digits.png>]
+<../figs/MNIST.png, id=232, 1229.59375pt x 845.1575pt>
 File: ../figs/MNIST.png Graphic file (type png)
-
-<use ../figs/MNIST.png>
+ <use ../figs/MNIST.png>
 Package pdftex.def Info: ../figs/MNIST.png used on input line 36.
-(pdftex.def)             Requested size: 115.63171pt x 86.72379pt.
-) (./report.bbl
-Missing character: There is no Ã in font cmr12!
-Missing character: There is no © in font cmr12!
- [11pdfTeX warning (ext4): destination with the same identifier (name{figure.3}
-) has been already used, duplicate ignored
+(pdftex.def)             Requested size: 307.39769pt x 211.28885pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
+
+ []
+
+[11pdfTeX warning (ext4): destination with the same identifier (name{figure.3})
+ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.44 
-      <../figs/MNIST.png>]) [12]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 243.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 243.
+l.46 
+      <../figs/MNIST.png>]) (./report.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 47--2
+
+ []
+
+Missing character: There is no Ã in font cmr12!
+Missing character: There is no © in font cmr12!
+[12]) [13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 149.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 149.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 243.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 243.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 149.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 149.
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: DA09C2ABEED90123C347CEA8BDBE55C4;1428.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 243.
+(rerunfilecheck)             Checksum: 4B66FBB5D3795BF4CB532A2F45531942;1414.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 149.
  ) 
 Here is how much of TeX's memory you used:
- 20275 strings out of 493089
- 377064 string characters out of 6134842
+ 20279 strings out of 493089
+ 377095 string characters out of 6134842
  458872 words of memory out of 5000000
  23348 multiletter control sequences out of 15000+600000
  12148 words of font info for 45 fonts, out of 8000000 for 9000
@@ -909,10 +923,10 @@ ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
 e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive
 /2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/
 2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on report.pdf (13 pages, 279354 bytes).
+Output written on report.pdf (14 pages, 327475 bytes).
 PDF statistics:
- 308 PDF objects out of 1000 (max. 8388607)
- 271 compressed objects within 3 object streams
- 57 named destinations out of 1000 (max. 500000)
+ 314 PDF objects out of 1000 (max. 8388607)
+ 276 compressed objects within 3 object streams
+ 58 named destinations out of 1000 (max. 500000)
  191 words of extra memory for PDF output out of 10000 (max. 10000000)
 
