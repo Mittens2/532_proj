@@ -455,6 +455,7 @@ class RBM_PT(BernoulliRBM):
         if not hasattr(self, "random_state_"):
             self.random_state_ = check_random_state(self.random_state)
         v_ = self.v_sample_
+        v_copy = np.copy(v_)
         for i in range(n):
             h_ = self._sample_hiddens(v_, self.random_state_)
             v_ = self._sample_visibles(h_, self.random_state_)
@@ -491,6 +492,7 @@ class RBM_PT(BernoulliRBM):
         prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
         rand = np.log(rng.uniform(prob.shape[0]))
         v_copy = v[i][prob > rand]
+        print(prob > rand)
         v[i][prob > rand] = v[j][prob > rand]
         v[j][prob > rand] = v_copy
         h_copy = h[i][prob > rand]

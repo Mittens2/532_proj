@@ -1,0 +1,8 @@
+\section{Introduction}
+Restricted Boltzmann Machines (RBMs) are Markov random fields with applications including density estimation, dimensionality reduction and collaborative filtering. When performing maximum likelihood training to learn the parameters of an RBM's, we run into the problem of having to compute intractable gradients. The gradients of an RBM are in the form of an expectation over high dimensional space and not computationally feasible to compute. We thus are forced to work with Monte Carlo approximations. 
+
+The classical approach to learning an RBM is to exploit the underlying graphical model structure and use Gibbs sampling to get approximate updates of the gradient. The issue is that Gibbs sampling performs local updates and has the tendency to get trapped in modes of the RBM distribution. This leads to biased estimates of the gradient, which can be detrimental to the effectiveness of the training procedure.
+
+Parallel tempering is a class of Monte Carlo methods that aims to improve the mixing of general MCMC algorithms, by allowing multiple chains to run in parallel at different temperatures. The high temperature chains exhibit better mixing, and explore the sample space more effectively. We then propose a sequence of swaps to communicate information from the high temperature chains to our room temperature chain of interest. 
+
+In this report we outline the classical approach to training RBM's called contrastive divergence (CD), and persisted contrastive divergence (PCD). We then discuss parallel tempering, and introduce two non-reversible variants which exhibit better mixing properties than classical PT. We then implement all of these procedures some data sets to test their performance when training RBMs.

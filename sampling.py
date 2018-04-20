@@ -22,7 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os.path
 FIGS_DIR = 'figs'
-DATA_DIR = 'data4'
+DATA_DIR = 'data'
 
 from scipy.ndimage import convolve
 from sklearn import linear_model, datasets, metrics
@@ -46,7 +46,7 @@ def loaddata(rbm_obj, rbm_name):
     rbm_obj.components_        = np.load(DATA_DIR + "/" + rbm_name + "_weights"      + dataset + '.npy')
     rbm_obj.intercept_visible_ = np.load(DATA_DIR + "/" + rbm_name + "_visible_bias" + dataset + '.npy')
     rbm_obj.intercept_hidden_  = np.load(DATA_DIR + "/" + rbm_name + "_hidden_bias"  + dataset + '.npy')
-    rbm_obj.log_like           = np.load(DATA_DIR + "/" + rbm_name + "_log_like"     + dataset + '.npy')
+    #rbm_obj.log_like           = np.load(DATA_DIR + "/" + rbm_name + "_log_like"     + dataset + '.npy')
 
 
 
@@ -105,8 +105,8 @@ learning_rate = best_params['learning_rate']
 batch_size = best_params['batch_size']
 verbose = True
 random_state = 0
-room_temp=0.7
-n_temp=6
+room_temp=0.8
+n_temp=10
 
 # Models we will use
 rbm_pcd = RBM(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size)
@@ -135,20 +135,20 @@ dim = 28
 n = 10
 n2 = n**2
 ng = 50
-rbm_pcd.v_sample_ = X0
-plt.figure(figsize=(4.2, 4))
-plt.subplot(n, n, 1)
-plt.imshow(X0.reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
-for i in range(1,n2):
-    plt.subplot(n, n, i + 1)
-    rbm_pcd.ngibbs(ng)
-    plt.imshow(rbm_pcd.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
-               interpolation='nearest')
-    plt.xticks(())
-    plt.yticks(())
-    print("PCD: " + str(i) + " images generated.")
-plt.suptitle('100 samples extracted by RBM w/ PCD', fontsize=16)
-plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
+# rbm_pcd.v_sample_ = X0
+# plt.figure(figsize=(4.2, 4))
+# plt.subplot(n, n, 1)
+# plt.imshow(X0.reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
+# for i in range(1,n2):
+#     plt.subplot(n, n, i + 1)
+#     rbm_pcd.ngibbs(ng)
+#     plt.imshow(rbm_pcd.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
+#                interpolation='nearest')
+#     plt.xticks(())
+#     plt.yticks(())
+#     print("PCD: " + str(i) + " images generated.")
+# plt.suptitle('100 samples extracted by RBM w/ PCD', fontsize=16)
+# plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
 
 print("\nDone sampling PCD\n")
 

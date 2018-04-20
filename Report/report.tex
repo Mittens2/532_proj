@@ -127,10 +127,7 @@
 \tableofcontents
 \newpage
 
-\section{Introduction}
-Restricted Boltzmann Machines (RBMs) are Markov random fields with applications including density estimation, 
-dimensionality reduction and collaborative filtering.
-
+\input{sec_1_intro}
 \section{Restricted Boltzmann Machines}
 \input{sec_2_RBM}
 
@@ -139,13 +136,13 @@ dimensionality reduction and collaborative filtering.
 \section{Tempering Methods}
 \input{sec_4_PT}
 \subsection{PT for RBM Training}
-We now outline how we use parallel tempering for training RBM's. PCD is essentially perform Gibbs on \eqref{RBM_gibbs} while updating the gradients at each iteration. We can adapt the parallel tempering framework to improve the learning in PCD by allowing multiple Gibbs chains to run simultaneously perform swaps as using the rules of PT, LPT, LPTD to help improve the mixing in Gibbs sampling. Similar to PCD, we continue to update the gradient via \eqref{LL_grad} after each iteration. 
+We now outline how we use parallel tempering for training RBM's. PCD is essentially performing Gibbs on \eqref{RBM_gibbs} while updating the gradients at each iteration. We can adapt the parallel tempering framework to improve the learning in PCD by allowing multiple Gibbs chains to run simultaneously, and performing swaps using the rules of PT, LPT, and LPTD to help improve the mixing in Gibbs sampling. Similar to PCD, we continue to update the gradient via \eqref{LL_grad} after each iteration. 
 
-Desjardins \cite{desjardins2010tempered} shows that a parallel tempering version of PCD achieves much better mixing than the standard PCD. For the MNIST dataset, PTPCS hase a drastic reduction in correlation between successive samples. This results in a much more efficient sampler that's able to sample from the different modes without the need of a time-consuming exploration. This is an important improvement to PCD since the running time rapidly increases with the complexity of the model and size of dataset.
+Desjardins \cite{desjardins2010tempered} shows that a parallel tempering version of PCD achieves much better mixing than the standard PCD. For the MNIST dataset, PT has a drastic reduction in correlation between successive samples. This results in a much more efficient sampler that's able to sample from the different modes without time-consuming exploration. This is an important improvement to PCD since the running time rapidly increases with the complexity of the model and size of dataset.
 
-On constructed datasets where the underlying distribution has modes that are highly separated, both CD, PCD shows substantial decreases in log-likelihood \cite{desjardins2010tempered}. However, the log-likelihood for PT seem to converge without any substantial decrease. Similar results are shown by \cite{salakhutdinov2009tempered}. Desjardins also demonstrates how the improved mixing properties of PT results in larger optimal learning rate compared to CD, PCD.
+On constructed datasets where the underlying distribution has modes that are highly separated, PT outperfroms both CD, PCD \cite{desjardins2010tempered}. Similar results are shown by \cite{salakhutdinov2009tempered}. Desjardins also demonstrates how the improved mixing properties of PT results in larger optimal learning rate compared to CD, PCD.
 
-In a learning scenario with large datasets and complex models, it's often unfeasible to reach convergence of log-likelihood. In such cases any improvement of convergence rate will result in an improved log-likelihood for a fixed number of learning iterations. Desjardins \cite{desjardins2010tempered} shows that this applies to training RBMs with PT. Using this as the training procedure gains a large increase in log-likelihood compared to CD, PCD. However, using the last PT sample as initial state when sampling does not seem to affect the quality of the samples. Initializing from the test set, or randomly initialization has equal performance. This indicates that having a more accurate distribution is more important than an accurate sampling procedure.
+In a learning scenario with large datasets and complex models, it's often unfeasible to reach convergence of log-likelihood. In such cases any improvement of convergence rate will result in an improved log-likelihood for a fixed number of learning iterations. Desjardins \cite{desjardins2010tempered} shows that this applies to training RBMs with PT. Using this as the training procedure gains a large increase in log-likelihood compared to CD, and PCD. However, using the last PT sample as initial state when sampling does not seem to affect the quality of the samples. Initializing from the test set, or randomly initialization has equal performance. This indicates that having a more accurate distribution is more important than an accurate sampling procedure.
 
 \section{Experiments}
 \input{sec_5_experiments}
