@@ -40,8 +40,7 @@ print(__doc__)
 # License: BSD
 
 import numpy as np
-#import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt
 from scipy.ndimage import convolve
 from sklearn import linear_model, datasets, metrics
 from sklearn.model_selection import train_test_split
