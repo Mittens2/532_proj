@@ -20,6 +20,13 @@ Persi Diaconis, Susan Holmes, and Radford~M Neal.
 \newblock Analysis of a nonreversible markov chain sampler.
 \newblock {\em Annals of Applied Probability}, pages 726--752, 2000.
 
+\bibitem[FI10]{fischer2010empirical}
+Asja Fischer and Christian Igel.
+\newblock Empirical analysis of the divergence of gibbs sampling based learning
+  algorithms for restricted boltzmann machines.
+\newblock In {\em International Conference on Artificial Neural Networks},
+  pages 208--217. Springer, 2010.
+
 \bibitem[FI14]{fischer2014training}
 Asja Fischer and Christian Igel.
 \newblock Training restricted boltzmann machines: An introduction.
@@ -50,6 +57,13 @@ David~A Kofke.
 Martin Lingenheil, Robert Denschlag, Gerald Mathias, and Paul Tavan.
 \newblock Efficiency of exchange schemes in replica exchange.
 \newblock {\em Chemical Physics Letters}, 478(1-3):80--84, 2009.
+
+\bibitem[PVG{\etalchar{+}}11]{pedregosa2011scikit}
+Fabian Pedregosa, Ga{\"e}l Varoquaux, Alexandre Gramfort, Vincent Michel,
+  Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron
+  Weiss, Vincent Dubourg, et~al.
+\newblock Scikit-learn: Machine learning in python.
+\newblock {\em Journal of machine learning research}, 12(Oct):2825--2830, 2011.
 
 \bibitem[SR{\etalchar{+}}10]{stoltz2010free}
 Gabriel Stoltz, Mathias Rousset, et~al.

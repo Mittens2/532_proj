@@ -7,47 +7,46 @@ Repeated entry---line 33 of file 01.bib
  : @article{kofke2002acceptance
  :                             ,
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "fischer2010empirical"
 Warning--empty journal in geyer1991markov
-You've used 13 entries,
+You've used 15 entries,
             2543 wiz_defined-function locations,
-            643 strings with 6614 characters,
-and the built_in function-call counts, 5764 in all, are:
-= -- 599
-> -- 227
-< -- 11
-+ -- 77
-- -- 76
-* -- 392
-:= -- 895
-add.period$ -- 41
-call.type$ -- 13
-change.case$ -- 78
-chr.to.int$ -- 13
-cite$ -- 14
-duplicate$ -- 246
-empty$ -- 438
-format.name$ -- 93
-if$ -- 1220
+            653 strings with 7119 characters,
+and the built_in function-call counts, 7027 in all, are:
+= -- 724
+> -- 311
+< -- 12
++ -- 108
+- -- 107
+* -- 497
+:= -- 1101
+add.period$ -- 48
+call.type$ -- 15
+change.case$ -- 98
+chr.to.int$ -- 15
+cite$ -- 16
+duplicate$ -- 286
+empty$ -- 514
+format.name$ -- 125
+if$ -- 1478
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 13
-newline$ -- 68
-num.names$ -- 39
-pop$ -- 85
+missing$ -- 15
+newline$ -- 78
+num.names$ -- 45
+pop$ -- 104
 preamble$ -- 1
-purify$ -- 92
+purify$ -- 114
 quote$ -- 0
-skip$ -- 215
+skip$ -- 250
 stack$ -- 0
-substring$ -- 393
-swap$ -- 64
-text.length$ -- 11
+substring$ -- 470
+swap$ -- 76
+text.length$ -- 12
 text.prefix$ -- 6
 top$ -- 0
-type$ -- 100
+type$ -- 116
 warning$ -- 1
-while$ -- 58
-width$ -- 15
-write$ -- 169
+while$ -- 69
+width$ -- 18
+write$ -- 196
 (There was 1 error message)

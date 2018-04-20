@@ -8,9 +8,14 @@
 \BOOKMARK [3][-]{subsubsection.4.1.1}{Temperature spacing}{subsection.4.1}% 8
 \BOOKMARK [3][-]{subsubsection.4.1.2}{Problems of Reversibility}{subsection.4.1}% 9
 \BOOKMARK [2][-]{subsection.4.2}{Lifted Parallel Tempering}{section.4}% 10
-\BOOKMARK [3][-]{subsubsection.4.2.1}{Generalized Metropolis-Hastings Framework}{subsection.4.2}% 11
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Generalized Metropolis-Hastings}{subsection.4.2}% 11
 \BOOKMARK [3][-]{subsubsection.4.2.2}{Lifted Parallel Tempering Algorithm}{subsection.4.2}% 12
 \BOOKMARK [2][-]{subsection.4.3}{Deterministic Even/Odd Algorithm}{section.4}% 13
 \BOOKMARK [2][-]{subsection.4.4}{PT for RBM}{section.4}% 14
 \BOOKMARK [1][-]{section.5}{Experiments}{}% 15
-\BOOKMARK [1][-]{section.6}{References}{}% 16
+\BOOKMARK [2][-]{subsubsection.5.0.1}{Experimental Setup}{section.5}% 16
+\BOOKMARK [3][-]{subsubsection.5.0.2}{Code Structure}{subsubsection.5.0.1}% 17
+\BOOKMARK [2][-]{subsection.5.1}{Results}{section.5}% 18
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Scikit-Learn Digit Dataset}{subsection.5.1}% 19
+\BOOKMARK [3][-]{subsubsection.5.1.2}{MNIST Dataset}{subsection.5.1}% 20
+\BOOKMARK [1][-]{section.6}{References}{}% 21
