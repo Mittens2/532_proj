@@ -228,7 +228,11 @@ Let $\mathcal{N}=\{(i,i+1):0\leq i<N\}$, be the set of adjacent pairs. We partit
 \mathcal{E}=\{(i,i+1)\in \mathcal{N}: i \text{ is even}\},\\
 \mathcal{O}=\{(i,i+1)\in \mathcal{N}: i \text{ is odd}\}.
 \end{align*}
+In the first communication phase, we propose swaps with chains $i$ and $i+1$ for all $(i,i+1)\in\mathcal{E}$ and accept/reject them with the metropolis acceptance ratio \eqref{accept_ratio}. Let us call this reversible metropolis-kernel $K_E$. Similarly for the next communication phase we propose swaps with chains $i$ and $i+1$ for all $(i,i+1)\in\mathcal{O}$ and accept/reject them with the metropolis acceptance ratio \eqref{accept_ratio}. Let us call this reversible metropolis-kernel $K_0$. We then repeat this process by continuing to alternate between even and odd proposals. 
 
+This is a valid MCMC algorithm, since each kernel leaves $\tilde{P}$ invariant. But similar to LPT, the composition of two reversible kernels $K_O\circ K_E$ need not be reversible. In particular, the connection with LPTD is that each replica follows the trajectory of a lifted replica from LPT. In particular for the $i$-th replica, $X_n^{\eta^i_n}$, if $\eta_n^i$ is odd, 
+
+Note that 
 
 \subsection{PT for RBM}
 \section{Experiments}
