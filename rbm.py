@@ -80,13 +80,9 @@ class RBM(BernoulliRBM):
 
     def expectation(self):
         """Perform one Gibbs sampling step.
-        Parameters
-        ----------
-        v : array-like, shape (n_samples, n_features)
-            Values of the visible layer to start from.
         Returns
         -------
-        v_new : array-like, shape (n_samples, n_features)
+        v_ : array-like, shape (n_features)
             Values of the visible layer after one Gibbs step.
         """
         if not hasattr(self, "random_state_"):
@@ -96,6 +92,15 @@ class RBM(BernoulliRBM):
         return v_
 
     def ngibbs(self, n):
+        """Perform n Gibbs sampling step.
+        Parameters
+        ----------
+        n: int, number of gibbs sampling steps.
+        Returns
+        -------
+        v_ : array-like, shape (n_features)
+            Values of the visible layer after one Gibbs step.
+        """
         if not hasattr(self, "random_state_"):
             self.random_state_ = check_random_state(self.random_state)
         v_ = self.v_sample_
@@ -153,6 +158,9 @@ class RBM_CD(RBM):
 
 
     def score(self, X, y):
+        """
+        Score used for CVGridSearch
+        """
         return self.score_samples(X).mean()
 
 
@@ -381,6 +389,9 @@ class RBM_PT(BernoulliRBM):
         return (rng.random_sample(size=p.shape) < p)
 
     def score(self, X, y):
+        """
+        Score used for CVGridSearch
+        """
         return self.score_samples(X).mean()
 
     def score_samples(self, X):
@@ -419,6 +430,12 @@ class RBM_PT(BernoulliRBM):
         return v.shape[1] * log_logistic(fe_ - fe)
 
     def expectation(self):
+        """Perform one Gibbs sampling step.
+        Returns
+        -------
+        v_ : array-like, shape (n_features)
+            Values of the visible layer after one Gibbs step.
+        """
         if not hasattr(self, "random_state_"):
             self.random_state_ = check_random_state(self.random_state)
         h_ = self._sample_hiddens(self.v_sample_, self.random_state_)
@@ -426,6 +443,15 @@ class RBM_PT(BernoulliRBM):
         return v_[0]
 
     def ngibbs(self, n):
+        """Perform n Gibbs sampling step.
+        Parameters
+        ----------
+        n: int, number of gibbs sampling steps.
+        Returns
+        -------
+        v_ : array-like, shape (n_features)
+            Values of the visible layer after one Gibbs step.
+        """
         if not hasattr(self, "random_state_"):
             self.random_state_ = check_random_state(self.random_state)
         v_ = self.v_sample_

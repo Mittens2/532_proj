@@ -1,28 +1,10 @@
 """
 ==============================================================
-Restricted Boltzmann Machine features for digit classification
+Restricted Boltzmann Machine  with Parallel Tempering
 ==============================================================
-
-For greyscale image data where pixel values can be interpreted as degrees of
-blackness on a white background, like handwritten digit recognition, the
-Bernoulli Restricted Boltzmann machine model (:class:`BernoulliRBM
-<sklearn.neural_network.BernoulliRBM>`) can perform effective non-linear
-feature extraction.
-
-In order to learn good latent representations from a small dataset, we
-artificially generate more labeled data by perturbing the training data with
-linear shifts of 1 pixel in each direction.
-
-This example shows how to build a classification pipeline with a BernoulliRBM
-feature extractor and a :class:`LogisticRegression
-<sklearn.linear_model.LogisticRegression>` classifier. The hyperparameters
-of the entire model (learning rate, hidden layer size, regularization)
-were optimized by grid search, but the search is not reproduced here because
-of runtime constraints.
-
-Logistic regression on raw pixel values is presented for comparison. The
-example shows that the features extracted by the BernoulliRBM help improve the
-classification accuracy.
+Sample the visibile units (i.e. reconstructions) after trianing.
+Set the visible units to data point and see mixing capabilities of different
+sampling techniques.
 """
 from __future__ import print_function
 from rbm import RBM
@@ -144,22 +126,6 @@ loaddata(rbm_cd, "rbm_cd")
 loaddata(rbm_pt, "rbm_pt")
 loaddata(rbm_lpt, "rbm_lpt")
 loaddata(rbm_lptp, "rbm_lptd")
-
-'''
-# Plots the log likelihood
-plt.plot(rbm_pcd.log_like, label = "PCD")
-plt.plot(rbm_cd.log_like, label = "CD")
-plt.plot(rbm_pt.log_like, label = "PT")
-plt.plot(rbm_lpt.log_like, label = "LPT")
-plt.plot(rbm_lptp.log_like, label = "LPTP")
-plt.xlabel('iteration')
-plt.ylabel('log likelihood')
-title = dataset + 'Log likelihood trend'
-plt.title(title)
-plt.legend()
-#savefig(title + '.png')
-plt.show()
-'''
 
 i = np.random.randint(0, X.shape[0])
 X0 = X[i]

@@ -1,28 +1,13 @@
 """
 ==============================================================
-Restricted Boltzmann Machine features for digit classification
+Restricted Boltzmann Machine with Parallel Tempering
 ==============================================================
-
-For greyscale image data where pixel values can be interpreted as degrees of
-blackness on a white background, like handwritten digit recognition, the
-Bernoulli Restricted Boltzmann machine model (:class:`BernoulliRBM
-<sklearn.neural_network.BernoulliRBM>`) can perform effective non-linear
-feature extraction.
-
-In order to learn good latent representations from a small dataset, we
-artificially generate more labeled data by perturbing the training data with
-linear shifts of 1 pixel in each direction.
-
-This example shows how to build a classification pipeline with a BernoulliRBM
-feature extractor and a :class:`LogisticRegression
-<sklearn.linear_model.LogisticRegression>` classifier. The hyperparameters
-of the entire model (learning rate, hidden layer size, regularization)
-were optimized by grid search, but the search is not reproduced here because
-of runtime constraints.
-
-Logistic regression on raw pixel values is presented for comparison. The
-example shows that the features extracted by the BernoulliRBM help improve the
-classification accuracy.
+5 variants for RBM training
+1) RBM with rbm_pcd
+2) RBM with CD-k
+3) RBM with PT
+4) RBM with LPT
+5) RBM with Deterministic Odd/Even (LPTD)
 """
 from __future__ import print_function
 from rbm import RBM
@@ -35,10 +20,6 @@ import os.path
 FIGS_DIR = 'figs'
 
 print(__doc__)
-
-# Authors: Yann N. Dauphin, Vlad Niculae, Gabriel Synnaeve
-# License: BSD
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import convolve
@@ -91,9 +72,9 @@ def nudge_dataset(X, Y):
     return X, Y
 
 # Load Data
-digits = datasets.load_digits()
-X = np.asarray(digits.data, 'float32')
-X, Y = nudge_dataset(X, digits.target)
+# digits = datasets.load_digits()
+# X = np.asarray(digits.data, 'float32')
+# X, Y = nudge_dataset(X, digits.target)
 
 mnist = fetch_mldata('MNIST original')
 X = mnist.data
@@ -107,7 +88,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
 
 logistic = linear_model.LogisticRegression(C=6000.0)
 # #############################################################################
-# Training
+# Hyperparameter Tuning
 #n_iter_train = 50
 # rbm = RBM_CD(n_iter=n_iter_train)
 # params = [{'n_components': [25, 50, 100],
@@ -126,6 +107,7 @@ logistic = linear_model.LogisticRegression(C=6000.0)
 # for mean, std, params in zip(means, stds, rbm_cv.cv_results_['params']):
 #     print("%0.3f (+/-%0.03f) for %r"
 #           % (mean, std * 2, params))
+
 # Models we will use
 best_params = {'n_components':50, 'learning_rate':0.02, 'batch_size':100}
 n_iter = 50
@@ -146,9 +128,7 @@ rbm_lpt= RBM_LPT(random_state=random_state, verbose=verbose, learning_rate=learn
 rbm_lptp = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size,
     n_temperatures=n_temp, room_temp=room_temp)
 
-# Training RBM-Logistic Pipeline
-#classifier1.fit(X_train, Y_train)
-
+# Training RBMs
 dataset = 'MNIST'
 rbm_pcd.fit(X_train, Y_train)
 np.save("data/rbm_pcd_weights" + dataset, rbm_pcd.components_)
@@ -180,62 +160,11 @@ np.save("data/rbm_lptd_visible_bias" + dataset, rbm_lptp.intercept_visible_)
 np.save("data/rbm_lptd_hidden_bias" + dataset, rbm_lptp.intercept_hidden_)
 plt.plot(np.arange(1, rbm_lptp.n_iter + 1), rbm_lptp.log_like, label='LPTD')
 
-# plt.xlabel('iteration')
-# plt.ylabel('log likelihood')
-# title = dataset + 'Log likelihood trend'
-# plt.title(title)
-# plt.legend()
-# savefig(title + '.png')
-# plt.show()
-
-# rbm_pt.v_sample_= X[1,]
-# plt.figure(figsize=(4.2, 4))
-# rbm_pt.ngibbs(1000)
-# e = rbm_pt.expectation()
-# for i in range(5):
-#     plt.subplot(1, 5, i + 1)
-#     rbm_pt.ngibbs(100)
-#     plt.imshow(e[i].reshape((28,28)), cmap=plt.cm.gray_r,
-#                interpolation='nearest')
-#     plt.xticks(())
-#     plt.yticks(())
-#
-# plt.suptitle('100 components extracted by RBM w/ PT', fontsize=16)
-# plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
-#
-# plt.show()
-
-
-# #############################################################################
-# Evaluation
-
-# print()
-# print("Logistic regression using PCD RBM features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         log_pcd.predict(X_test))))
-#
-# print("Logistic regression using CD RBM features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         log_cd.predict(X_test))))
-#
-# print("Logistic regression using CD RBM features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         log_pt.predict(X_test))))
-#
-# print("Logistic regression using CD RBM features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         log_lpt.predict(X_test))))
-#
-# print("Logistic regression using CD RBM features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         log_lptp.predict(X_test))))
-#
-# print("Logistic regression using raw pixel features:\n%s\n" % (
-#     metrics.classification_report(
-#         Y_test,
-#         logistic_classifier.predict(X_test))))
+# Plot log likelihood
+plt.xlabel('iteration')
+plt.ylabel('log likelihood')
+title = dataset + 'Log likelihood trend'
+plt.title(title)
+plt.legend()
+savefig(title + '.png')
+plt.show()
