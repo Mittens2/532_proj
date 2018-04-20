@@ -230,10 +230,9 @@ Let $\mathcal{N}=\{(i,i+1):0\leq i<N\}$, be the set of adjacent pairs. We partit
 \end{align*}
 In the first communication phase, we propose swaps with chains $i$ and $i+1$ for all $(i,i+1)\in\mathcal{E}$ and accept/reject them with the metropolis acceptance ratio \eqref{accept_ratio}. Let us call this reversible metropolis-kernel $K_E$. Similarly for the next communication phase we propose swaps with chains $i$ and $i+1$ for all $(i,i+1)\in\mathcal{O}$ and accept/reject them with the metropolis acceptance ratio \eqref{accept_ratio}. Let us call this reversible metropolis-kernel $K_0$. We then repeat this process by continuing to alternate between even and odd proposals. 
 
-This is a valid MCMC algorithm, since each kernel leaves $\tilde{P}$ invariant. But similar to LPT, the composition of two reversible kernels $K_O\circ K_E$ need not be reversible. In particular, the connection with LPTD is that each replica follows the trajectory of a lifted replica from LPT. In particular for the $i$-th replica, $X_n^{\eta^i_n}$, if $\eta_n^i$ is odd, 
+This is a valid MCMC algorithm, since each kernel leaves $\tilde{P}$ invariant. But similar to LPT, the composition of two reversible kernels $K_O\circ K_E$ need not be reversible. In particular, the connection with LPTD is that each replica follows the trajectory of a lifted replica from LPT. In particular for the $i$-th replica, $X_n^{\eta^i_n}$, if $\eta_n^i$ is odd, and a swap is successful then $\eta^i_{n+1}=\eta_n^i+1$ will be even and will be proposed an increase in temperature. If the swap was rejected then $\eta_{n+1}^i=\eta_n^i$ will be odd, and will be proposed a swap to decrease the temperature. So $\eta_n^i$ will continue to increase until a rejection occurs, in which case the direction will be reversed. An identical argument shows the same holds when $\eta_n^i$ is even. 
 
-Note that 
-
+This shows that the same advantages we expect out of LPT, should hold true for LPTD, but LPTD has multiple replicas carrying information as opposed to LPT, where there is one. \cite{lingenheil2009efficiency} showed empirically that LPTD perform the best among a variety of swapping schemes, but this connection between LPT, and LPTD is the theoretical reason why it outperforms the competing swapping schemes. 
 \subsection{PT for RBM}
 \section{Experiments}
 \input{sec_5_experiments}

@@ -17,5 +17,5 @@
 \contentsline {subsubsection}{\numberline {5.0.2}Code Structure}{9}{subsubsection.5.0.2}
 \contentsline {subsection}{\numberline {5.1}Results}{9}{subsection.5.1}
 \contentsline {subsubsection}{\numberline {5.1.1}Scikit-Learn Digit Dataset}{9}{subsubsection.5.1.1}
-\contentsline {subsubsection}{\numberline {5.1.2}MNIST Dataset}{10}{subsubsection.5.1.2}
+\contentsline {subsubsection}{\numberline {5.1.2}MNIST Dataset}{11}{subsubsection.5.1.2}
 \contentsline {section}{\numberline {6}References}{11}{section.6}
