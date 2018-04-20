@@ -12,11 +12,12 @@
 \contentsline {subsubsection}{\numberline {4.2.2}Lifted Parallel Tempering Algorithm}{7}{subsubsection.4.2.2}
 \contentsline {subsection}{\numberline {4.3}Deterministic Even/Odd Algorithm}{8}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}PT for RBM Training}{9}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}Algorithm}{10}{subsubsection.4.4.1}
 \contentsline {section}{\numberline {5}Experiments}{10}{section.5}
 \contentsline {subsubsection}{\numberline {5.0.1}Experimental Setup}{10}{subsubsection.5.0.1}
 \contentsline {subsubsection}{\numberline {5.0.2}Code Structure}{10}{subsubsection.5.0.2}
-\contentsline {subsection}{\numberline {5.1}Results}{10}{subsection.5.1}
-\contentsline {subsubsection}{\numberline {5.1.1}Scikit-Learn Digit Dataset}{10}{subsubsection.5.1.1}
-\contentsline {subsubsection}{\numberline {5.1.2}MNIST Dataset}{12}{subsubsection.5.1.2}
-\contentsline {section}{\numberline {6}Discussion}{12}{section.6}
-\contentsline {section}{\numberline {7}References}{13}{section.7}
+\contentsline {subsection}{\numberline {5.1}Results}{12}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Scikit-Learn Digit Dataset}{12}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}MNIST Dataset}{13}{subsubsection.5.1.2}
+\contentsline {section}{\numberline {6}Discussion}{14}{section.6}
+\contentsline {section}{\numberline {7}References}{14}{section.7}

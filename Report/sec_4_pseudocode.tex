@@ -1,0 +1,65 @@
+Training using PCD, PT, LPT and PLTD is performed according to the pseudocode as in procedure \ref{alg:training}. For PCD, the number of temperatures other than room temperature, $N$ is set to zero, and the exchange function is removed. For PT, LPT and PLTD the exchange function attempts to exchange samples between changes with probabilities as discussed earlier. The CD method runs a similar algorithm as PCD, but replacing lines 13-18 with procedure \ref{alg:cd}.
+\begin{algorithm}
+\caption{Training of RMB by PCD/PT/LPT/LPTD}\label{alg:training}
+\begin{algorithmic}[1]
+\Procedure{TrainRBM}{$\mathcal{X},n_{iter},B,n,m,N,\gamma,\alpha$}
+	\Require 
+		$\mathcal{X}$: Data \par
+		$n_{iter}$: Number of passes through the data \par
+		$B$: Batch size \par
+		$n$: Number of visible components \par
+		$m$: Number of hidden components \par
+		$N$: Number of temperatures in addition to the room temperature \par
+		$\gamma$: Relative difference in tempeartures \par
+		$\alpha$: Learning rate  
+	\Ensure
+		$W$: Weights \par
+		$b$: Biases for the visible units\par
+		$c$: Biases for the hidden units
+	\For {$s \gets 1,\dots,B, t = 1, \dots, N$}\Comment{Initialize the negative phase hidden units}
+		\State $\mathbf{h}_{neg}^{(s,t)} \gets 0$ 
+	\EndFor
+	\For {$i = 1, \dots, |X|, j = 1, \dots, H$}\Comment{Initialize the weights and biases}
+		\State $w_{ij}  \gets 0$ 
+		\State $b_{i}  \gets 0$ 
+		\State $c_{j}  \gets 0$ 
+	\EndFor 
+	\For {$ l \gets 1,\dots, n_{iter}$} 
+		\For {$ \mathcal{B} \in \mathcal{X}$} \Comment{For all batches}
+			\For {$s \gets 1,\dots,B$} \Comment{For all samples in batch $ \mathcal{B}$}
+				\For {$t \gets 0,\dots,N$} \Comment{For all temperatures}
+					\State $\mathbf{v}_{pos}^{(s,t)} \gets X_s$ \Comment{Update the positive and negative phase}
+					\State $h_{pos,j}^{(s,t)} \gets P(h_{pos,i} = 1 \mid \mathbf{v}_{pos}^{(s,t)})^{\gamma^t}, \quad j=1,\dots,m$ 
+					\State $v_{neg,i}^{(s,t)} \sim  P(v_{neg,i} = 1 \mid \mathbf{h}_{neg}^{(s,t)})^{\gamma^t}, \quad i=1,\dots,n$ 
+					\State $h_{neg,j}^{(s,t)} \gets P(h_{neg,j} = 1 \mid \mathbf{v}_{neg}^{(s,t)})^{\gamma^t}, \quad j=1,\dots,m$ 
+				\EndFor
+			\EndFor
+			\State \text{exchange}$(h_{pos}, v_{pos})$ \Comment{Propose to exchange}
+			\State $\mathbf{v}_{pos} \gets \sum_{s=1}^{B} \mathbf{v}_{pos}^{(s,0)}$
+			\State $\mathbf{h}_{pos} \gets \sum_{s=1}^{B} \mathbf{h}_{pos}^{(s,0)}$
+			\State $W \gets W + \alpha \left(\mathbf{v}_{pos}^T\mathbf{h}_{pos} - \mathbf{v}_{neg}^T\mathbf{h}_{neg} \right)$
+				\Comment{Update weights and biases}
+			\State $b \gets b + \alpha \left(\mathbf{v}_{pos} - \mathbf{v}_{neg}\right)$
+			\State $c \gets c + \alpha \left(\mathbf{h}_{pos} - \mathbf{h}_{neg}\right)$
+			
+			\For {$s \gets 1,\dots,B, t = 1, \dots, N$}\Comment{Sample the negative phase hidden units}
+				\State $h_{neg,j}^{(s,t)} \sim P(h_{neg,j} = 1 \mid \mathbf{v}_{neg}^{(s,t)})^{\gamma^t}$
+			\EndFor
+		\EndFor
+	\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{CD adaptation of Procedure \label{alg:cd}. $k$ denotes number of CD steps.}
+\begin{algorithmic}[1]
+		\State $\mathbf{v}_{pos}^{(s,t)} \gets X_s$ \Comment{Update the positive phase}
+		\State $h_{pos,j}^{(s,1)} \gets P(h_{pos,i} = 1 \mid \mathbf{v}_{pos}^{(s,1)})^{\gamma^t}, \quad j=1,\dots,m$ 
+		\State $h_{neg,j}^{(s,1)} \gets h_{pos,j}^{(s,1)}, \quad j=1,\dots,m$  \Comment{Update the negative phase}
+		\For {$it \gets 1,\dots,k$}
+			\State $v_{neg,i}^{(s,1)} \sim P(v_{neg,i} = 1 \mid \mathbf{h}_{neg}^{(s,1)})^{\gamma^t}, \quad i=1,\dots,n$ 
+			\State $h_{neg,j}^{(s,1)} \sim P(h_{neg,j} = 1 \mid \mathbf{v}_{neg}^{(s,1)})^{\gamma^t}, \quad j=1,\dots,m$ 
+		\EndFor
+\end{algorithmic}
+\end{algorithm}
