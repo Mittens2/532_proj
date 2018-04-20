@@ -143,6 +143,8 @@ Desjardins \cite{desjardins2010tempered} shows that a parallel tempering version
 On constructed datasets where the underlying distribution has modes that are highly separated, PT outperfroms both CD, PCD \cite{desjardins2010tempered}. Similar results are shown by \cite{salakhutdinov2009tempered}. Desjardins also demonstrates how the improved mixing properties of PT results in larger optimal learning rate compared to CD, PCD.
 
 In a learning scenario with large datasets and complex models, it's often unfeasible to reach convergence of log-likelihood. In such cases any improvement of convergence rate will result in an improved log-likelihood for a fixed number of learning iterations. Desjardins \cite{desjardins2010tempered} shows that this applies to training RBMs with PT. Using this as the training procedure gains a large increase in log-likelihood compared to CD, and PCD. However, using the last PT sample as initial state when sampling does not seem to affect the quality of the samples. Initializing from the test set, or randomly initialization has equal performance. This indicates that having a more accurate distribution is more important than an accurate sampling procedure.
+\subsubsection{Algorithm}
+\input{sec_4_pseudocode.tex}
 
 \section{Experiments}
 \input{sec_5_experiments}
