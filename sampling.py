@@ -29,6 +29,7 @@ from rbm import RBM
 from rbm import RBM_CD
 from rbm import RBM_PT
 from rbm import RBM_LPT
+from rbm import RBM_LPTOC
 
 print(__doc__)
 
@@ -102,83 +103,105 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     random_state=0)
 
 # Models we will use
-rbm_pcd = RBM    (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100)
-rbm_cd  = RBM_CD (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, cd_k=1)
-rbm_pt  = RBM_PT (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
-rbm_lpt = RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=100, temp=np.array([0.9**i for i in range(10)]))
+rbm_pcd = RBM    (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=50)
+rbm_cd  = RBM_CD (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=50, cd_k=1)
+rbm_pt  = RBM_PT (random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=50)
+rbm_lpt = RBM_LPT(random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=50)
+rbm_lptp = RBM_LPTOC(random_state=0, verbose=True, learning_rate=0.02, batch_size=10, n_iter=100, n_components=50)
 
-rbm_pcd.components_        = np.load("data/rbm_pcd_weights.npy")
-rbm_pcd.intercept_visible_ = np.load("data/rbm_pcd_visible_bias.npy")
-rbm_pcd.intercept_hidden_  = np.load("data/rbm_pcd_hidden_bias.npy")
+dataset = 'MNIST'
+rbm_pcd.components_        = np.load("data/rbm_pcd_weights" + dataset + '.npy')
+rbm_pcd.intercept_visible_ = np.load("data/rbm_pcd_visible_bias" + dataset + '.npy')
+rbm_pcd.intercept_hidden_  = np.load("data/rbm_pcd_hidden_bias" + dataset + '.npy')
 
-rbm_cd.components_         = np.load("data/rbm_cd_weights.npy")
-rbm_cd.intercept_visible_  = np.load("data/rbm_cd_visible_bias.npy")
-rbm_cd.intercept_hidden_   = np.load("data/rbm_cd_hidden_bias.npy")
+rbm_cd.components_         = np.load("data/rbm_cd_weights" + dataset + '.npy')
+rbm_cd.intercept_visible_  = np.load("data/rbm_cd_visible_bias" + dataset + '.npy')
+rbm_cd.intercept_hidden_   = np.load("data/rbm_cd_hidden_bias" + dataset + '.npy')
 
-rbm_pt.components_         = np.load("data/rbm_pt_weights.npy")
-rbm_pt.intercept_visible_  = np.load("data/rbm_pt_visible_bias.npy")
-rbm_pt.intercept_hidden_   = np.load("data/rbm_pt_hidden_bias.npy")
+rbm_pt.components_         = np.load("data/rbm_pt_weights" + dataset + '.npy')
+rbm_pt.intercept_visible_  = np.load("data/rbm_pt_visible_bias" + dataset + '.npy')
+rbm_pt.intercept_hidden_   = np.load("data/rbm_pt_hidden_bias" + dataset + '.npy')
 
-rbm_lpt.components_        = np.load("data/rbm_lpt_weights.npy")
-rbm_lpt.intercept_visible_ = np.load("data/rbm_lpt_visible_bias.npy")
-rbm_lpt.intercept_hidden_  = np.load("data/rbm_lpt_hidden_bias.npy")
+rbm_lpt.components_        = np.load("data/rbm_lpt_weights" + dataset + '.npy')
+rbm_lpt.intercept_visible_ = np.load("data/rbm_lpt_visible_bias" + dataset + '.npy')
+rbm_lpt.intercept_hidden_  = np.load("data/rbm_lpt_hidden_bias" + dataset + '.npy')
 
+rbm_lptp.components_        = np.load("data/rbm_lptd_weights" + dataset + '.npy')
+rbm_lptp.intercept_visible_ = np.load("data/rbm_lptd_visible_bias" + dataset + '.npy')
+rbm_lptp.intercept_hidden_  = np.load("data/rbm_lptd_hidden_bias" + dataset + '.npy')
 
-
+dim = 28
 rbm_pcd.v_sample_ = X_train[0]
 plt.figure(figsize=(4.2, 4))
 plt.subplot(5, 5, 1)
-plt.imshow(X_train[0].reshape((28, 28)), cmap=plt.cm.gray_r,interpolation='nearest')
+plt.imshow(X_train[0].reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
 for i in range(1,25):
     plt.subplot(5, 5, i + 1)
     rbm_pcd.ngibbs(100)
-    plt.imshow(rbm_pcd.expectation().reshape((28, 28)), cmap=plt.cm.gray_r,
+    plt.imshow(rbm_pcd.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
                interpolation='nearest')
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ PCD', fontsize=16)
 plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
+plt.show()
 
 rbm_cd.v_sample_ = X_train[0]
 plt.figure(figsize=(4.2, 4))
 plt.subplot(5, 5, 1)
-plt.imshow(X_train[0].reshape((28, 28)), cmap=plt.cm.gray_r,interpolation='nearest')
+plt.imshow(X_train[0].reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
 for i in range(1,25):
     plt.subplot(5, 5, i + 1)
     rbm_cd.ngibbs(100)
-    plt.imshow(rbm_cd.expectation().reshape((28, 28)), cmap=plt.cm.gray_r,
+    plt.imshow(rbm_cd.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
                interpolation='nearest')
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ CD', fontsize=16)
 plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
+plt.show()
 
-rbm_pt.v_sample_ = np.repeat(X[0].reshape(1,1,X[0].shape[0]), rbm_pt.n_temperatures, axis=0)
+rbm_pt.v_sample_ = np.repeat(X_train[0].reshape(1,1,X_train[0].shape[0]), rbm_pt.n_temperatures, axis=0)
 plt.figure(figsize=(4.2, 4))
 plt.subplot(5, 5, 1)
-plt.imshow(X_train[0].reshape((28, 28)), cmap=plt.cm.gray_r,interpolation='nearest')
+plt.imshow(X_train[0].reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
 for i in range(1,25):
     plt.subplot(5, 5, i + 1)
     rbm_pt.ngibbs(100)
-    plt.imshow(rbm_pt.expectation().reshape((28, 28)), cmap=plt.cm.gray_r,
+    plt.imshow(rbm_pt.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
                interpolation='nearest')
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ PT', fontsize=16)
 plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
+plt.show()
 
-rbm_lpt.v_sample_ = np.repeat(X[0].reshape(1,1,X[0].shape[0]), rbm_pt.n_temperatures, axis=0)
+rbm_lptp.v_sample_ = np.repeat(X_train[0].reshape(1,1,X_train[0].shape[0]), rbm_pt.n_temperatures, axis=0)
 plt.figure(figsize=(4.2, 4))
 plt.subplot(5, 5, 1)
-plt.imshow(X_train[0].reshape((28, 28)), cmap=plt.cm.gray_r,interpolation='nearest')
+plt.imshow(X_train[0].reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
+for i in range(1,25):
+    plt.subplot(5, 5, i + 1)
+    rbm_lptp.ngibbs(100)
+    plt.imshow(rbm_lptp.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
+               interpolation='nearest')
+    plt.xticks(())
+    plt.yticks(())
+plt.suptitle('100 components extracted by RBM w/ LPTP', fontsize=16)
+plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
+plt.show()
+
+rbm_lpt.v_sample_ = np.repeat(X_train[0].reshape(1,1,X_train[0].shape[0]), rbm_pt.n_temperatures, axis=0)
+plt.figure(figsize=(4.2, 4))
+plt.subplot(5, 5, 1)
+plt.imshow(X_train[0].reshape((dim, dim)), cmap=plt.cm.gray_r,interpolation='nearest')
 for i in range(1,25):
     plt.subplot(5, 5, i + 1)
     rbm_lpt.ngibbs(100)
-    plt.imshow(rbm_lpt.expectation().reshape((28, 28)), cmap=plt.cm.gray_r,
+    plt.imshow(rbm_lpt.expectation().reshape((dim, dim)), cmap=plt.cm.gray_r,
                interpolation='nearest')
     plt.xticks(())
     plt.yticks(())
 plt.suptitle('100 components extracted by RBM w/ LPT', fontsize=16)
 plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
-
 plt.show()

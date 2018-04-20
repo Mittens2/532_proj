@@ -204,10 +204,10 @@ class RBM_CD(RBM):
 # RBM for parallel tempering
 class RBM_PT(BernoulliRBM):
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
-                 n_iter=10, verbose=0, random_state=None, temp=np.array([1-i/5 for i in range(5)])):
+                 n_iter=10, verbose=0, room_temp=0.7, n_temperatures=6, random_state=None):
         self.n_components = n_components
-        self.temp = temp
-        self.n_temperatures = temp.shape[0]
+        self.temp = np.array([room_temp ** i for i in range(n_temperatures)])
+        self.n_temperatures = n_temperatures
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.n_iter = n_iter
@@ -259,6 +259,7 @@ class RBM_PT(BernoulliRBM):
         verbose = self.verbose
         begin = time.time()
         log_like = np.zeros(self.n_iter)
+        log_like[iteration - 1] = self.score_samples(X).mean()
         for iteration in xrange(1, self.n_iter + 1):
             for batch_slice in batch_slices:
                 v = np.repeat(X[batch_slice].reshape(1,X[batch_slice].shape[0], X[batch_slice].shape[1]), self.n_temperatures, axis=0)
@@ -379,7 +380,8 @@ class RBM_PT(BernoulliRBM):
         expit(p, out=p)
         return (rng.random_sample(size=p.shape) < p)
 
-
+    def score(self, X, y):
+        return self.score_samples(X).mean()
 
     def score_samples(self, X):
         """Compute the pseudo-likelihood of X.
@@ -460,15 +462,6 @@ class RBM_PT(BernoulliRBM):
             + np.sum((h[i] @ self.components_) * v[i], axis=1))
         en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ \
             + np.sum(h[j] @ self.components_ * v[j], axis=1))
-        # prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
-        # rand = np.log(rng.uniform())
-        # if prob > rand:
-        #     v_copy = np.copy(v[i])
-        #     v[i] = v[j]
-        #     v[j] = v_copy
-        #     h_copy = np.copy(h[i])
-        #     h[i] = h[j]
-        #     h[j] = h_copy
         prob = (self.temp[i] - self.temp[j]) * (en1 - en2)
         rand = np.log(rng.uniform(prob.shape[0]))
         v_copy = v[i][prob > rand]
@@ -483,10 +476,10 @@ class RBM_PT(BernoulliRBM):
 class RBM_LPT(RBM_PT):
 
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
-                 n_iter=10, verbose=0, random_state=None, temp=np.array([1-i/5 for i in range(5)])):
+                 n_iter=10, verbose=0, random_state=None, room_temp=0.7, n_temperatures=6):
         self.n_components = n_components
-        self.temp = temp
-        self.n_temperatures = temp.shape[0]
+        self.temp = np.array([room_temp ** i for i in range(n_temperatures)])
+        self.n_temperatures = n_temperatures
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.n_iter = n_iter
@@ -512,31 +505,6 @@ class RBM_LPT(RBM_PT):
         rng : RandomState
             Random number generator to use.
         """
-        # i = self.ex_ind
-        # if i == self.n_temperatures - 1:
-        #     j = i - 1
-        #     self.ex_dir = -1
-        # elif i == 0:
-        #     j = 1
-        #     self.ex_dir = 1
-        # else:
-        #     j = i + self.ex_dir
-        # en1 = -(v[i] @ self.intercept_visible_ + h[i] @ self.intercept_hidden_ \
-        #     + np.sum((h[i] @ self.components_) * v[i], axis=1))
-        # en2 = -(v[j] @ self.intercept_visible_ + h[j] @ self.intercept_hidden_ \
-        #     + np.sum(h[j] @ self.components_ * v[j], axis=1))
-        # prob = (self.temp[i] - self.temp[j]) * (np.mean(en1) - np.mean(en2))
-        # rand = np.log(rng.uniform())
-        # if prob > rand:
-        #     v_copy = np.copy(v[i])
-        #     v[i] = v[j]
-        #     v[j] = v_copy
-        #     h_copy = np.copy(h[i])
-        #     h[i] = h[j]
-        #     h[j] = h_copy
-        # else:
-        #     self.ex_dir = -self.ex_dir
-
         lift = self.ex_dir
         i = self.ex_ind
         j = np.zeros(self.batch_size).astype(int)
@@ -548,8 +516,8 @@ class RBM_LPT(RBM_PT):
         lift[i == 0] = 1
         j[j == 0] = i[j == 0] + lift[j == 0]
 
-        ind_i = [tuple(i), tuple(range(10))]
-        ind_j = [tuple(j), tuple(range(10))]
+        ind_i = [tuple(i), tuple(range(v.shape[1]))]
+        ind_j = [tuple(j), tuple(range(v.shape[1]))]
         en1 = -(v[ind_i] @ self.intercept_visible_ + h[ind_i] @ self.intercept_hidden_ \
             + np.sum(h[ind_i] @ self.components_ * v[ind_i], axis=1))
         en2 = -(v[ind_j] @ self.intercept_visible_ + h[ind_j] @ self.intercept_hidden_ \
@@ -569,10 +537,10 @@ class RBM_LPT(RBM_PT):
 # RBM with LPT on crack
 class RBM_LPTOC(RBM_PT):
     def __init__(self, n_components=256, learning_rate=0.1, batch_size=10,
-                 n_iter=10, verbose=0, random_state=None, temp=np.array([1-i/5 for i in range(5)])):
+                 n_iter=10, verbose=0, random_state=None, room_temp=0.7, n_temperatures=6):
         self.n_components = n_components
-        self.temp = temp
-        self.n_temperatures = temp.shape[0]
+        self.temp = np.array([room_temp ** i for i in range(n_temperatures)])
+        self.n_temperatures = n_temperatures
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.n_iter = n_iter
@@ -598,14 +566,6 @@ class RBM_LPTOC(RBM_PT):
         # Get all energies
         en = -(v @ self.intercept_visible_ + h @ self.intercept_hidden_ \
             + np.sum(h @ self.components_ * v, axis=2))
-        # prob = (self.temp[i:-1:2] - self.temp[i+1::2]) * (np.mean(en[i:-1:2], axis=1) - np.mean(en[i+1::2], axis=1))
-        # rand = np.log(rng.uniform(size = prob.shape[0]))
-        # v_copy = np.copy(v[i:-1:2][prob > rand])
-        # v[i:-1:2][prob > rand] = v[i+1::2][prob > rand]
-        # v[i+1::2][prob > rand] = v_copy
-        # h_copy = np.copy(h[i:-1:2][prob > rand])
-        # h[i:-1:2][prob > rand] = h[i+1::2][prob > rand]
-        # h[i+1::2][prob > rand] = h_copy
         prob = np.multiply((self.temp[i:-1:2] - self.temp[i+1::2]), (en[i:-1:2] - en[i+1::2]).T).T
         rand = np.log(rng.uniform(size = prob.shape))
         v_copy = np.copy(v[i:-1:2][prob > rand])

@@ -40,7 +40,7 @@ print(__doc__)
 # License: BSD
 
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 from scipy.ndimage import convolve
 from sklearn import linear_model, datasets, metrics
@@ -96,42 +96,23 @@ digits = datasets.load_digits()
 X = np.asarray(digits.data, 'float32')
 X, Y = nudge_dataset(X, digits.target)
 
-# mnist = fetch_mldata('MNIST original')
-# X = mnist.data
-# Y = mnist.target
-# X,Y = shuffle(X,Y)
+mnist = fetch_mldata('MNIST original')
+X = mnist.data
+Y = mnist.target
+X,Y = shuffle(X,Y)
 
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y,
                                                     test_size=0.2,
                                                 random_state=0)
 
-# Models we will use
-best_params = {'n_iter':100, 'n_components':50, 'learning_rate':0.02}
-n_iter = best_params['n_iter']
-n_components = best_params['n_components']
-learning_rate = best_params['learning_rate']
-verbose = True
-random_state = 0
-rbm_pcd = RBM(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components)
-rbm_cd = RBM_CD(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, cd_k=1)
-rbm_pt = RBM_PT(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components,
-    temp=np.array([0.8**i for i in range(6)]))
-rbm_lpt= RBM_LPT(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components,
-    temp=np.array([0.8**i for i in range(6)]))
-rbm_lptoc = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components,
-    temp=np.array([0.8**i for i in range(6)]))
-
-# logistic1 = linear_model.LogisticRegression(C=6000.0)
-# logistic2 = linear_model.LogisticRegression(C=6000.0)
-
-#classifier1 = Pipeline(steps=[('rbm', rbm), ('logistic', logistic1)])
-#classifier2 = Pipeline(steps=[('rbm', rbm_cd), ('logistic', logistic2)])
+logistic = linear_model.LogisticRegression(C=6000.0)
 # #############################################################################
 # Training
-# rbm = RBM_CD()
-# params = [{'n_iter': [100], 'n_components': [25, 50, 100],
-#      'learning_rate': [0.001, 0.01, 0.1]}]
+#n_iter_train = 50
+# rbm = RBM_CD(n_iter=n_iter_train)
+# params = [{'n_components': [25, 50, 100],
+#       'learning_rate': [0.001, 0.01, 0.1], 'batch_size': [1, 10, 100]}]
 # rbm_cv = GridSearchCV(rbm, params)
 # rbm_cv.fit(X_train, Y_train)
 # best_params = rbm_cv.best_params_
@@ -146,48 +127,67 @@ rbm_lptoc = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=
 # for mean, std, params in zip(means, stds, rbm_cv.cv_results_['params']):
 #     print("%0.3f (+/-%0.03f) for %r"
 #           % (mean, std * 2, params))
+# Models we will use
+best_params = {'n_components':50, 'learning_rate':0.02, 'batch_size':100}
+n_iter = 50
+n_components = best_params['n_components']
+learning_rate = best_params['learning_rate']
+batch_size = best_params['batch_size']
+verbose = True
+random_state = 0
+room_temp=0.7
+n_temp=6
+
+rbm_pcd = RBM(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size)
+rbm_cd = RBM_CD(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size, cd_k=1)
+rbm_pt = RBM_PT(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size,
+    n_temperatures=n_temp, room_temp=room_temp)
+rbm_lpt= RBM_LPT(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size,
+    n_temperatures=n_temp, room_temp=room_temp)
+rbm_lptp = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=learning_rate, n_iter=n_iter, n_components=n_components, batch_size=batch_size,
+    n_temperatures=n_temp, room_temp=room_temp)
 
 # Training RBM-Logistic Pipeline
 #classifier1.fit(X_train, Y_train)
-#
-# rbm_pcd.fit(X_train, Y_train)
-# np.save("data/rbm_pcd_weights",      rbm_pcd.components_)
-# np.save("data/rbm_pcd_visible_bias", rbm_pcd.intercept_visible_)
-# np.save("data/rbm_pcd_hidden_bias",  rbm_pcd.intercept_hidden_)
-# plt.plot(np.arange(1, rbm_pcd.n_iter + 1), rbm_pcd.log_like, label='PCD')
-#
-# rbm_cd.fit(X_train, Y_train)
-# np.save("data/rbm_cd_weights",      rbm_cd.components_)
-# np.save("data/rbm_cd_visible_bias", rbm_cd.intercept_visible_)
-# np.save("data/rbm_cd_hidden_bias",  rbm_cd.intercept_hidden_)
-# plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='CD')
 
-# rbm_pt.fit(X_train, Y_train)
-# np.save("data/rbm_pt_weights",      rbm_pt.components_)
-# np.save("data/rbm_pt_visible_bias", rbm_pt.intercept_visible_)
-# np.save("data/rbm_pt_hidden_bias",  rbm_pt.intercept_hidden_)
-# plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='PT')
-#
+dataset = 'MNIST'
+rbm_pcd.fit(X_train, Y_train)
+np.save("data/rbm_pcd_weights" + dataset, rbm_pcd.components_)
+np.save("data/rbm_pcd_visible_bias" + dataset, rbm_pcd.intercept_visible_)
+np.save("data/rbm_pcd_hidden_bias" + dataset, rbm_pcd.intercept_hidden_)
+plt.plot(np.arange(1, rbm_pcd.n_iter + 1), rbm_pcd.log_like, label='PCD')
+
+rbm_cd.fit(X_train, Y_train)
+np.save("data/rbm_cd_weights" + dataset, rbm_cd.components_)
+np.save("data/rbm_cd_visible_bias" + dataset, rbm_cd.intercept_visible_)
+np.save("data/rbm_cd_hidden_bias" + dataset,  rbm_cd.intercept_hidden_)
+plt.plot(np.arange(1, rbm_cd.n_iter + 1), rbm_cd.log_like, label='CD')
+
+rbm_pt.fit(X_train, Y_train)
+np.save("data/rbm_pt_weights" + dataset, rbm_pt.components_)
+np.save("data/rbm_pt_visible_bias" + dataset, rbm_pt.intercept_visible_)
+np.save("data/rbm_pt_hidden_bias" + dataset, rbm_pt.intercept_hidden_)
+plt.plot(np.arange(1, rbm_pt.n_iter + 1), rbm_pt.log_like, label='PT')
+
 rbm_lpt.fit(X_train, Y_train)
-np.save("data/rbm_lpt_weights",      rbm_lpt.components_)
-np.save("data/rbm_lpt_visible_bias", rbm_lpt.intercept_visible_)
-np.save("data/rbm_lpt_hidden_bias",  rbm_lpt.intercept_hidden_)
+np.save("data/rbm_lpt_weights" + dataset, rbm_lpt.components_)
+np.save("data/rbm_lpt_visible_bias" + dataset, rbm_lpt.intercept_visible_)
+np.save("data/rbm_lpt_hidden_bias" + dataset, rbm_lpt.intercept_hidden_)
 plt.plot(np.arange(1, rbm_lpt.n_iter + 1), rbm_lpt.log_like, label='LPT')
-#
-# rbm_lptoc.fit(X_train, Y_train)
-# np.save("data/rbm_pt_weights",      rbm_lptoc.components_)
-# np.save("data/rbm_pt_visible_bias", rbm_lptoc.intercept_visible_)
-# np.save("data/rbm_pt_hidden_bias",  rbm_lptoc.intercept_hidden_)
-# plt.plot(np.arange(1, rbm_lptoc.n_iter + 1), rbm_lptoc.log_like, label='LPTP')
+
+rbm_lptp.fit(X_train, Y_train)
+np.save("data/rbm_lptd_weights" + dataset, rbm_lptp.components_)
+np.save("data/rbm_lptd_visible_bias" + dataset, rbm_lptp.intercept_visible_)
+np.save("data/rbm_lptd_hidden_bias" + dataset, rbm_lptp.intercept_hidden_)
+plt.plot(np.arange(1, rbm_lptp.n_iter + 1), rbm_lptp.log_like, label='LPTD')
 
 # plt.xlabel('iteration')
 # plt.ylabel('log likelihood')
-# title = 'TOY Log likelihood trend'
+# title = dataset + 'Log likelihood trend'
 # plt.title(title)
 # plt.legend()
 # savefig(title + '.png')
 # plt.show()
-
 
 # rbm_pt.v_sample_= X[1,]
 # plt.figure(figsize=(4.2, 4))
@@ -206,23 +206,37 @@ plt.plot(np.arange(1, rbm_lpt.n_iter + 1), rbm_lpt.log_like, label='LPT')
 #
 # plt.show()
 
-'''
+
 # #############################################################################
 # Evaluation
 
-print()
-print("Logistic regression using PCD RBM features:\n%s\n" % (
-    metrics.classification_report(
-        Y_test,
-        classifier1.predict(X_test))))
-
-print("Logistic regression using CD RBM features:\n%s\n" % (
-    metrics.classification_report(
-        Y_test,
-        classifier2.predict(X_test))))
+# print()
+# print("Logistic regression using PCD RBM features:\n%s\n" % (
+#     metrics.classification_report(
+#         Y_test,
+#         log_pcd.predict(X_test))))
+#
+# print("Logistic regression using CD RBM features:\n%s\n" % (
+#     metrics.classification_report(
+#         Y_test,
+#         log_cd.predict(X_test))))
+#
+# print("Logistic regression using CD RBM features:\n%s\n" % (
+#     metrics.classification_report(
+#         Y_test,
+#         log_pt.predict(X_test))))
+#
+# print("Logistic regression using CD RBM features:\n%s\n" % (
+#     metrics.classification_report(
+#         Y_test,
+#         log_lpt.predict(X_test))))
+#
+# print("Logistic regression using CD RBM features:\n%s\n" % (
+#     metrics.classification_report(
+#         Y_test,
+#         log_lptp.predict(X_test))))
 #
 # print("Logistic regression using raw pixel features:\n%s\n" % (
 #     metrics.classification_report(
 #         Y_test,
 #         logistic_classifier.predict(X_test))))
-'''
