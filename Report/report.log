@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  19 APR 2018 20:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  19 APR 2018 20:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -808,30 +808,41 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.58 \end{align*}
-                 ])
+                 ]) (./sec_3_CD.tex
 
-LaTeX Warning: Citation `geyer1991markov' on page 3 undefined on input line 143
+LaTeX Warning: Citation `fischer2010empirical' on page 3 undefined on input lin
+e 11.
+
+[3])
+
+LaTeX Warning: Citation `geyer1991markov' on page 4 undefined on input line 143
 .
 
-[3] [4] [5] (./sec_5_experiments.tex) (./report.bbl [6]) [7]
+[4] [5] [6] (./sec_5_experiments.tex) (./report.bbl [7]) [8]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 219.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 219.
  (./report.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 219.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 219.
-Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 7AB7E690C0F2A19AC6F409A8FB8F9653;853.
 
+
+Package rerunfilecheck Warning: File `report.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `report.out':
+(rerunfilecheck)             Before: 7AB7E690C0F2A19AC6F409A8FB8F9653;853
+(rerunfilecheck)             After:  57BF45ECD8D90C7162DA2DA37A588E15;906.
 
 LaTeX Warning: There were undefined references.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 219.
  ) 
 Here is how much of TeX's memory you used:
- 20216 strings out of 493089
- 376071 string characters out of 6134842
+ 20222 strings out of 493089
+ 376147 string characters out of 6134842
  457306 words of memory out of 5000000
- 23320 multiletter control sequences out of 15000+600000
+ 23321 multiletter control sequences out of 15000+600000
  11979 words of font info for 44 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,14n,73p,952b,660s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -849,10 +860,10 @@ live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
 ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
 e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive
 /2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on report.pdf (8 pages, 181919 bytes).
+Output written on report.pdf (9 pages, 187797 bytes).
 PDF statistics:
- 192 PDF objects out of 1000 (max. 8388607)
- 166 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
+ 204 PDF objects out of 1000 (max. 8388607)
+ 177 compressed objects within 2 object streams
+ 36 named destinations out of 1000 (max. 500000)
  117 words of extra memory for PDF output out of 10000 (max. 10000000)
 

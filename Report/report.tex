@@ -105,7 +105,7 @@
 \begin{titlepage}
 	\centering
 	
-	{\scshape \Large STAT 548 Report 3
+	{\scshape \Large CPSC 538R Project Report
 \par}
 	\vspace{1cm}
 	{\huge\bfseries Lifted Parallel Tempering for Training Restricted Boltzmann Machines''
@@ -135,7 +135,7 @@ dimensionality reduction and collaborative filtering.
 \input{sec_2_RBM}
 
 \section{Contrastive Divergence}
-
+\input{sec_3_CD}
 \section{Tempering Methods}
 As we have discussed previously, the problem of learning the model for an RBM can be boiled down to effectively we can approximate $\E_P\left(\frac{\partial E}{\partial \theta}\right)$. In order to do this, we had to resort to Gibbs Sampling. 
 Gibbs sampling performs local updates to generate a Markov Chain with stationary distribution $P(\textbf{v},\textbf{h})$ which is complex and multi-modal. Despite the theoretical guaranteed convergence of Gibb's sampling, the local nature of the updates means that chain can have a very difficult time traversing the modes of $P$ and  has a tendency to get trapped exploring the local areas of our sample space of high probability. This means that certain modes are over-represented, while other are under-represented and leading to a poor approximation of our expectation.
@@ -152,19 +152,19 @@ where $Z(\beta)$ is the partition function.
 
 Given a sequence of inverse temperatures $0\leq\beta_{\min}= \beta_0<\beta_{1}<\cdots<\beta_N=1$, we define the measure $\tilde{P}$ on $\Omega^{N+1}$ by,
 \[\tilde{P}=P^{(\beta_0)}\times\cdots\times P^{(\beta_N)}.\]
-In parallel tempering we construct a Markov chain $X_n=(X_n^{0},\cdots, X^{N}_n)$ on $\Omega^N$ with stationary distribution $\tilde{\pi}$. We update $X_n$ by alternate between two different type of dynamics: exploration and communication. 
+In parallel tempering we construct a Markov chain $\tilde{X}_n=(X_n^{0},\cdots, X^{N}_n)$ on $\Omega^N$ with stationary distribution $\tilde{\pi}$. We update $X_n$ by alternate between two different type of dynamics: exploration and communication. 
 
-During the exploration phase, we allow for each $X_n^i$ to independently explore $\Omega$ according to $P^{(\beta_i)}$ via our favourite MCMC algorithm such as Gibb's Sampling. Since MCMC updates of each component $i$ leaves $P^{(\beta_i)}$ invariant, we have the exploration phase leaves $\tilde{P}$ invariant.
+During the exploration phase, we allow for each $X_n^i$ to independently explore $\Omega$ according to $P^{(\beta_i)}$ via our favourite MCMC algorithm such as Gibbs Sampling. Since MCMC updates of each component $i$ leaves $P^{(\beta_i)}$ invariant, we have the exploration phase leaves $\tilde{P}$ invariant.
 
-During the communication phase, give we propose a swap between the $\beta_i$ and $\beta_j$ components of $X_n$, in other words we swap $ X^i_n$ and $X^j_n$ in $X_n$. To simplify notation, given $x=(x^0,\cdots,x^i,\cdots,x^j,\cdots, x^N)$, we will define $x_{(i,j)}=(x^0,\cdots,x^j,\cdots,x^i,\cdots,x^N)$. So the proposed state during the communication phase is $(X_n)_{(i,j)}$. In order to preserve stationary, we can make this update reversible by accepting this proposed swap according to the Metropolis acceptance,
+During the communication phase, we propose a swap between the $\beta_i$ and $\beta_j$ components of $\tilde{X}_n$, in other words we swap $X^i_n$ and $X^j_n$ in $\tilde{X}_n$. To simplify notation, given $x=(x^0,\cdots,x^i,\cdots,x^j,\cdots, x^N)$, we will define $x_{(i,j)}=(x^0,\cdots,x^j,\cdots,x^i,\cdots,x^N)$. So the proposed state during the communication phase is $(\tilde{X}_n)_{(i,j)}$. In order to keep $\tilde{X}_n$ stationary with respect to $\tilde{P}$, we can make this update reversible by accepting this proposed swap according to the Metropolis acceptance,
 \begin{align*}
 \alpha
-&=1\wedge\frac{\tilde{P}((X_n)_{(i,j)})}{\tilde{P}(X_n)}\\
+&=1\wedge\frac{\tilde{P}((\tilde{X}_n)_{(i,j)})}{\tilde{P}(\tilde{X}_n)}\\
 &=1\wedge\frac{P^{(\beta_i)}(X_n^j)P^{(\beta_j)}(X_n^i)}{P^{(\beta_i)}(X_n^i)P^{(\beta_j)}(X_n^j)}\\
 &=1\wedge\exp\left[(\beta_j-\beta_i)(E(X_n^j)-E(X_n^i))\right]
 \end{align*}
 
-We refer to $(X_n^{i})_{n\geq0}$ as the $i^{th}$ chain, the sequence of states at a particular temperature $\beta_i$. We refer to the sequence $R^i=(X_0^{i},\dots,X_n^i,X_{n+1}^{j},X_{n+2}^{j},\dots)$ as the $i^{th}$ replica. The $i^{th}$ replica follows the trajectory of the $i^{th}$ state as it's temperature changes. In this case, there was a successful swap at time $n$ between temperatures at states $\beta_i$ and $\beta_j$.  
+We refer to the sequence $(X_n^{i})_{n\geq0}$ as the $i^{th}$ chain, the sequence of states at a particular temperature $\beta_i$. We refer to the sequence $R^i=(X_0^{i},\dots,X_n^i,X_{n+1}^{j},X_{n+2}^{j},\dots)$ as the $i^{th}$ replica. The $i^{th}$ replica follows the trajectory of the $i^{th}$ state as it's temperature changes. In this case, there was a successful swap at time $n$ between temperatures at states $\beta_i$ and $\beta_j$.  
 
 Since the likelihood of acceptance is proportional to the change in temperature, we usually restrict to our swaps to nearest neighbours. 
 \subsection{Lifted Parallel Tempering}
