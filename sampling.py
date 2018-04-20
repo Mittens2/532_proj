@@ -40,6 +40,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os.path
 FIGS_DIR = 'figs'
+DATA_DIR = 'data4'
 
 from scipy.ndimage import convolve
 from sklearn import linear_model, datasets, metrics
@@ -58,6 +59,13 @@ def savefig(fname, verbose=True):
     plt.savefig(path)
     if verbose:
         print("Figure saved as '{}'".format(path))
+
+def loaddata(rbm_obj, rbm_name):
+    rbm_obj.components_        = np.load(DATA_DIR + "/" + rbm_name + "_weights"      + dataset + '.npy')
+    rbm_obj.intercept_visible_ = np.load(DATA_DIR + "/" + rbm_name + "_visible_bias" + dataset + '.npy')
+    rbm_obj.intercept_hidden_  = np.load(DATA_DIR + "/" + rbm_name + "_hidden_bias"  + dataset + '.npy')
+    rbm_obj.log_like           = np.load(DATA_DIR + "/" + rbm_name + "_log_like"     + dataset + '.npy')
+
 
 
 def nudge_dataset(X, Y):
@@ -91,7 +99,8 @@ def nudge_dataset(X, Y):
     return X, Y
 
 # Load Data
-if True:
+MNIST = True
+if not MNIST:
     digits = datasets.load_digits()
     X = np.asarray(digits.data, 'float32')
     X, Y = nudge_dataset(X, digits.target)
@@ -128,33 +137,21 @@ rbm_lptp = RBM_LPTOC(random_state=random_state, verbose=verbose, learning_rate=l
     n_temperatures=n_temp, room_temp=room_temp)
 
 
+# Loads data of the trained model
 dataset = 'MNIST'
-rbm_pcd.components_        = np.load("data4/rbm_pcd_weights" + dataset + '.npy')
-rbm_pcd.intercept_visible_ = np.load("data4/rbm_pcd_visible_bias" + dataset + '.npy')
-rbm_pcd.intercept_hidden_  = np.load("data4/rbm_pcd_hidden_bias" + dataset + '.npy')
-print(rbm_pcd.components_.shape)
-rbm_cd.components_         = np.load("data4/rbm_cd_weights" + dataset + '.npy')
-rbm_cd.intercept_visible_  = np.load("data4/rbm_cd_visible_bias" + dataset + '.npy')
-rbm_cd.intercept_hidden_   = np.load("data4/rbm_cd_hidden_bias" + dataset + '.npy')
-print(rbm_cd.components_.shape)
-rbm_pt.components_         = np.load("data4/rbm_pt_weights" + dataset + '.npy')
-rbm_pt.intercept_visible_  = np.load("data4/rbm_pt_visible_bias" + dataset + '.npy')
-rbm_pt.intercept_hidden_   = np.load("data4/rbm_pt_hidden_bias" + dataset + '.npy')
-print(rbm_pt.components_.shape)
-rbm_lpt.components_        = np.load("data4/rbm_lpt_weights" + dataset + '.npy')
-rbm_lpt.intercept_visible_ = np.load("data4/rbm_lpt_visible_bias" + dataset + '.npy')
-rbm_lpt.intercept_hidden_  = np.load("data4/rbm_lpt_hidden_bias" + dataset + '.npy')
-print(rbm_lpt.components_.shape)
-rbm_lptp.components_        = np.load("data4/rbm_lptd_weights" + dataset + '.npy')
-rbm_lptp.intercept_visible_ = np.load("data4/rbm_lptd_visible_bias" + dataset + '.npy')
-rbm_lptp.intercept_hidden_  = np.load("data4/rbm_lptd_hidden_bias" + dataset + '.npy')
-print(rbm_lptp.components_.shape)
+loaddata(rbm_pcd, "rbm_pcd")
+loaddata(rbm_cd, "rbm_cd")
+loaddata(rbm_pt, "rbm_pt")
+loaddata(rbm_lpt, "rbm_lpt")
+loaddata(rbm_lptp, "rbm_lptd")
 
-plt.plot(np.load("data4/rbm_pcd_log_like" + dataset + ".npy"), label = "PCD")
-plt.plot(np.load("data4/rbm_cd_log_like" + dataset + ".npy"), label = "CD")
-plt.plot(np.load("data4/rbm_pt_log_like" + dataset + ".npy"), label = "PT")
-plt.plot(np.load("data4/rbm_lpt_log_like" + dataset + ".npy"), label = "LPT")
-plt.plot(np.load("data4/rbm_lptp_log_like" + dataset + ".npy"), label = "LPTP")
+'''
+# Plots the log likelihood
+plt.plot(rbm_pcd.log_like, label = "PCD")
+plt.plot(rbm_cd.log_like, label = "CD")
+plt.plot(rbm_pt.log_like, label = "PT")
+plt.plot(rbm_lpt.log_like, label = "LPT")
+plt.plot(rbm_lptp.log_like, label = "LPTP")
 plt.xlabel('iteration')
 plt.ylabel('log likelihood')
 title = dataset + 'Log likelihood trend'
@@ -162,28 +159,11 @@ plt.title(title)
 plt.legend()
 #savefig(title + '.png')
 plt.show()
-
-
-'''
-dim = 28
-n = 5
-n2 = n**2
-plt.figure(figsize=(4.2, 4))
-plt.subplot(n, n, 1)
-for i in range(0,n2):
-    plt.subplot(n, n, i + 1)
-    plt.imshow(X[70000//n2 * 9].reshape((dim, dim)), cmap=plt.cm.gray_r,
-               interpolation='nearest')
-    plt.xticks(())
-    plt.yticks(())
-plt.suptitle('100 samples extracted by RBM w/ PCD', fontsize=16)
-plt.subplots_adjust(0.08, 0.02, 0.92, 0.85, 0.08, 0.23)
-plt.show()
 '''
 
-
-X0 = X[np.random.randint(0, X.shape[0])]
-
+i = np.random.randint(0, X.shape[0])
+X0 = X[i]
+print(i)
 
 dim = 28
 n = 10
